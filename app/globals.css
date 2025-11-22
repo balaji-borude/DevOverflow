@@ -1,14 +1,11 @@
 @import "tailwindcss";
-
-
-
-
+ 
 @plugin "@tailwindcss/typography";
 
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
 
 /* setup Color theme  */
-@theme {
+ @theme {
   --color-primary-100: #fff1e6;
   --color-primary-500: #ff7000;
 
@@ -47,9 +44,14 @@
 
   --breakpoint-xs: 420px;
 
+
   --font-inter: var(--font-inter);
   --font-space-grotesk: var(--font-space-grotesk);
-}
+} 
+
+/* @theme{
+  --color-light-500:#7b8ec8
+}  */
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -59,6 +61,7 @@
   If we ever want to remove these styles, we need to add an explicit border
   color utility to any element that depends on these defaults.
 */
+
 @layer base {
   *,
   ::after,
@@ -69,6 +72,8 @@
   }
 }
 
+/* ############################### */
+/* This @utility is the class which we can call on application --> due to common styling for all the components  */
 @utility background-light850_dark100 {
   @apply bg-light-850 dark:bg-dark-100;
 }
@@ -171,11 +176,11 @@
 }
 
 @utility h1-bold {
-  @apply text-[30px] font-bold leading-[42px] tracking-tighter;
+  @apply text-[30px] font-bold leading-[42px] tracking-tighter bg-red-500;
 }
 
 @utility h2-bold {
-  @apply text-[24px] font-bold leading-[31.2px];
+  @apply text-[24px] font-bold leading-[31.2px] ;
 }
 
 @utility h2-semibold {
@@ -341,6 +346,16 @@
 @utility tab {
   @apply min-h-full! dark:bg-dark-400! bg-light-800! text-light-500! dark:data-[state=active]:bg-dark-300! data-[state=active]:bg-primary-100! data-[state=active]:text-primary-500!;
 }
+
+
+
+
+
+
+
+
+
+
 
 @layer base {
   :root {
