@@ -87,9 +87,10 @@ body {
   --breakpoint-xs: 420px;
 
  /* TODO --> find whhy we dont need decalaring the font in the theme  */
-/* 
+
+ /* navbar madhe grotesk la use kele -->,  */
   --font-inter: var(--font-inter);
-  --font-space-grotesk: var(--font-space-grotesk); */
+  --font-space-grotesk: var(--font-space-grotesk);
 
 } 
 
@@ -118,6 +119,20 @@ body {
 
 /* ############################### */
 /* This @utility is the class which we can call on application --> due to common styling for all the components  */
+
+/*  these are the some custom utilities made for --> early access */
+@utility flex-center {
+  @apply flex justify-center items-center;
+}
+
+@utility flex-between {
+  @apply flex justify-between items-center;
+}
+
+@utility flex-start {
+  @apply flex justify-start items-center;
+}
+
 @utility background-light850_dark100 {
   @apply bg-light-850 dark:bg-dark-100;
 }
@@ -347,17 +362,7 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-@utility flex-center {
-  @apply flex justify-center items-center;
-}
 
-@utility flex-between {
-  @apply flex justify-between items-center;
-}
-
-@utility flex-start {
-  @apply flex justify-start items-center;
-}
 
 @utility card-wrapper {
   @apply bg-light-900 dark:dark-gradient shadow-light-100 dark:shadow-dark-100;

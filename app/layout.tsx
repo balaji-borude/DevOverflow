@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+
+import Navbar from "@/components/navbar/Navbar";
 import ThemeProvider from "@/context/Theme";
 
 const InterFont = Inter({
@@ -29,14 +30,14 @@ export default function RootLayout({
       <body
         className={`${InterFont.variable} ${spaceGroteskFont.variable} antialiased`}
       >
-        <Navbar/>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
-           disableTransitionOnChange
-        >
+          disableTransitionOnChange
+          >
 
+          <Navbar/>
          {children}
         </ThemeProvider>
       </body>
