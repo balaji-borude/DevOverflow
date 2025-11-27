@@ -5,6 +5,7 @@ const SignUp = () => {
   return (
     <div>SignUp
       <SocialAuthForm/>
+      jay baba ki 
     </div>
   )
 }
