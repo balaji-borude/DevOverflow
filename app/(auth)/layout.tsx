@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import Image from "next/image";
+import SocialAuthForm from "@/components/forms/SocialAuthForm";
 
 //every Route Group -->() Route group means route wrapped in ()--> can have its own layout
 // every page in (auth) will be wrapped by this layout
@@ -13,7 +14,7 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
 
       <section className="light-border background-light800_dark200 shadow-light100_dark100 min-w-full rounded-[10px] border px-4 py-10 shadow-md sm:min-w-[520px] sm:px-8 ">
         <div className="flex items-center justify-between">
-          <div className="space-y-2.5 ">
+          <div className="space-y-2.5">
             <h1 className="h2-bold text-dark100_light900">Join Devflow</h1>
             <p className="paragraph-regular text-dark500_light400 ">
               To get your questions Answered{" "}
@@ -23,8 +24,8 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
           <Image
             src="/images/site-logo.svg"
             alt="Devflow Logo"
-            width={30}
-            height={30}
+            width={40}
+            height={40}
             className="object-contain"
           />
         </div>
@@ -32,7 +33,8 @@ const AuthLayout = ({ children }: { children: ReactNode }) => {
         {children}
 
         {/*Below there is social link for authetication   */}
-        <p> Social Auth </p>
+        {/* <p> Social Auth </p> */}
+        <SocialAuthForm/>
       </section>
     </main>
   );

@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
+import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
+import { Toaster } from "@/components/ui/sonner";
 
 import ThemeProvider from "@/context/Theme";
+import { SessionProvider } from "next-auth/react";
+
+import { auth } from "@/auth"; // auth sessonche function
 
 const InterFont = Inter({
   variable: "--font-inter",
@@ -20,27 +24,40 @@ export const metadata: Metadata = {
   description: "A Better version of Stack Overflow in Next.js",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en" suppressHydrationWarning >
-      <body
-        className={`${InterFont.variable} ${spaceGroteskFont.variable} antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          >
+  // yehte sessionl cha object create kela
+  const session = await auth();
 
-     
-         {children}
-        </ThemeProvider>
-      </body>
+  return (
+    <html lang="en" suppressHydrationWarning>
+      {/* 1. auth.js sathi sessionProvider madhe wrap karaychi whole app chi body 
+      2. 
+      
+      */}
+
+      <SessionProvider session={session}>
+        <body
+          className={`${InterFont.variable} ${spaceGroteskFont.variable} antialiased`}
+        >
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+
+          {/* Toaster by shadcn Sooner  */}
+          <Toaster />
+
+
+        </body>
+      </SessionProvider>
     </html>
   );
 }
