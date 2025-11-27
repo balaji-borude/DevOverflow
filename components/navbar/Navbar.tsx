@@ -22,9 +22,9 @@ const Navbar = () => {
       </Link>
 
       {/* searchbar  */}
-      <div className="lg:w-[600px] md:w-[400px] bg-red-400 flex justify-center ">
+      <div className="lg:w-[600px] md:w-[400px] flex justify-center ">
         {/* <p>searchbox</p> */}
-        <input type="text" placeholder="Search..."  className="w-full  outline-1 p-1 rounded-2"/>
+        <input type="text" placeholder="Search..."  className="w-full  outline-1 p-1 pl-3 rounded-2"/>
 
       </div>
 
@@ -35,6 +35,7 @@ const Navbar = () => {
       </div>
 
       {/* autheticated user icons */}
+
     </nav>
   );
 };

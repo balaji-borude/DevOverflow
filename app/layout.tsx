@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-import Navbar from "@/components/navbar/Navbar";
+
 import ThemeProvider from "@/context/Theme";
 
 const InterFont = Inter({
@@ -37,7 +37,7 @@ export default function RootLayout({
           disableTransitionOnChange
           >
 
-          <Navbar/>
+     
          {children}
         </ThemeProvider>
       </body>
