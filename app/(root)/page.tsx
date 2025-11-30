@@ -1,6 +1,7 @@
 import { auth, signOut } from "@/auth";
 import ROUTES from "@/constants/route";
 import React from "react";
+import { toast } from "sonner";
 
 const Home = async () => {
   const session = await auth();
@@ -21,6 +22,7 @@ const Home = async () => {
         action={async () => {
           "use server";
           await signOut({redirectTo:ROUTES.SIGN_IN});
+          // toast.success()
         }}
       >
         <button type="submit">Logout</button>

@@ -12,6 +12,7 @@ const SocialAuthForm = () => {
   const buttonStyles =
     " flex justify-center hover:cursor-pointer background-dark400_light900 body-medium text-dark200_light800 rounded-2 min-h-12 flex-1  px-4 py-3.5  ";
 
+    // signin Functin for oAuth 
   const handleSignIn = async (provider: "github" | "google") => {
     try {
 
