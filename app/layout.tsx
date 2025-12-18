@@ -41,6 +41,7 @@ export default async function RootLayout({
 
       <SessionProvider session={session}>
         <body
+        suppressHydrationWarning
           className={`${InterFont.variable} ${spaceGroteskFont.variable} antialiased`}
         >
           <ThemeProvider

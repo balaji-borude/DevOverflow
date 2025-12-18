@@ -1,87 +1,116 @@
 "use client";
 
-// theese import form Zod for validation 
-import { string, z, ZodType, success } from 'zod';
-import { zodResolver } from "@hookform/resolvers/zod"
-import { DefaultValues, FieldValues, SubmitHandler, useForm } from "react-hook-form" ; // react hookf form libary 
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm, SubmitHandler, FieldValues, Path, DefaultValues } from "react-hook-form";
+import { ZodType } from "zod";
+ import { toast } from "sonner";
 
-// Ui shadn components 
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+ import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import ROUTES from "@/constants/route";
+import { promises } from "dns";
 
-// form schema --> zod 
-const formSchema = z.object({
-  username: z.string().min(2).max(50),
-});
+//import { toast } from "@/hooks/use-toast";
+
+type ActionResponse = {
+  success: boolean;
+  status?: number;
+  error?: {
+    message: string;
+  };
+};
 
 interface AuthFormProps<T extends FieldValues> {
-  Schema:ZodType<T>;
-  defaultValues:T;
-  onSubmit:(data:T)=>Promise<{success:boolean}>;
-  formType:"SIGN_IN" | "SIGN_UP";
+  Schema: ZodType<T>;
+  defaultValues: T;
+  onSubmit: (data: T) => Promise<ActionResponse>;
+  formType: "SIGN_IN" | "SIGN_UP";
 }
 
-const AuthForms = ({
-  Schema,
-  defaultValues,
-  formType,
-  onSubmit
-}:AuthFormProps<T>) => {
 
+const AuthForm = <T extends FieldValues>({ Schema, defaultValues, onSubmit, formType }: AuthFormProps<T>) => {
+  const router = useRouter();
 
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues:defaultValues as DefaultValues<T>
+  const form = useForm<T>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(Schema as any),
+    defaultValues: defaultValues as DefaultValues<T>,
   });
 
-  // 2. Define a submit handler.
-  // function onSubmit(values: z.infer<typeof formSchema>) {
-  //   // Do something with the form values.
-  //   // ✅ This will be type-safe and validated.
-  //   console.log(values);
-  // }
+  const handleSubmit: SubmitHandler<T> = async (data) => {
+    const result = (await onSubmit(data)) ;
 
-  const handleSubmit:SubmitHandler<T> =async()=>{
+if (result?.success) {
+  toast.success(
+    formType === "SIGN_IN"
+      ? "You have successfully signed in."
+      : "You have successfully signed up."
+  );
 
-  }
+  router.replace(ROUTES.HOME);
+} else {
+  toast.error(result?.error?.message ?? "Something went wrong");
+}
 
-  // 
-  const buttonText = formType === "SIGN_IN" ? "SIGN_IN" :"SIGNU_UP"
+  };
+
+  const buttonText = formType === "SIGN_IN" ? "Sign In" : "Sign Up";
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
-  )
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="mt-10 space-y-6">
+        {Object.keys(defaultValues).map((field) => (
+          <FormField
+            key={field}
+            control={form.control}
+            name={field as Path<T>}
+            render={({ field }) => (
+              <FormItem className="flex w-full flex-col gap-2.5">
+                <FormLabel className="paragraph-medium text-dark400_light700">
+                  {field.name === "email" ? "Email Address" : field.name.charAt(0).toUpperCase() + field.name.slice(1)}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    required
+                    type={field.name === "password" ? "password" : "text"}
+                    {...field}
+                    className="paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 no-focus rounded-1.5 min-h-12 border"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
 
+        <Button
+          disabled={form.formState.isSubmitting}
+          className="primary-gradient paragraph-medium rounded-2 font-inter text-light-900! min-h-12 w-full px-4 py-3"
+        >
+          {form.formState.isSubmitting ? (buttonText === "Sign In" ? "Signing In..." : "Signing Up...") : buttonText}
+        </Button>
+      </form>
+
+      {formType === "SIGN_IN" ? (
+        <p className="paragraph-regular text-dark400_light700 mt-6 text-center">
+          Don’t have an account?{" "}
+          <Link href={ROUTES.SIGN_UP} className="paragraph-semibold primary-text-gradient">
+            Sign up
+          </Link>
+        </p>
+      ) : (
+        <p className="paragraph-regular text-dark400_light700 mt-6 text-center">
+          Already have an account?{" "}
+          <Link href={ROUTES.SIGN_IN} className="paragraph-semibold primary-text-gradient">
+            Sign in
+          </Link>
+        </p>
+      )}
+    </Form>
+  );
 };
 
-export default AuthForms;
+export default AuthForm;
