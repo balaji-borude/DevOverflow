@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { cn } from "@/lib/utils";
+import { SheetClose } from "./ui/sheet";
 
 const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
 
@@ -12,7 +13,7 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
   const pathname = usePathname();
 
   // for the Profile section temporary setting the id 
-  const id=1;
+  const userId=1;
 
   return (
     <>
@@ -23,10 +24,12 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
           (pathname.includes(item.route) && item.route.length > 1) ||
           pathname === item.route;
         
-        // profile section 
+        // profile section --> if userId is present then reset the item.route /${user_id} 
         if(item.route ==='/profile'){
-
-        }
+          if(userId) item.route = `${item.route}/${userId}`
+          // if we dont have userId then exit the function 
+          else return null;
+        } 
 
         //   actual Link compnnets 
         const LinkComponent = (
@@ -47,8 +50,17 @@ const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
           </Link>
         );
 
-        // return the LInks
-        return LinkComponent;
+        // return the LInks --> but it has to manually close the section 
+        // return LinkComponent;
+
+        return isMobileNav ?  (
+          <SheetClose asChild key={item.route}>
+            {LinkComponent}
+          </SheetClose>
+        ):(
+          // if it is not mobile nav then 
+          <React.Fragment key={item.route}> {LinkComponent}</React.Fragment>
+        )
       })}
     </>
   );

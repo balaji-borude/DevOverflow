@@ -26,14 +26,14 @@ const MobileNavigation = () => {
         {/*Main sidebar section is here   */}
         <SheetContent
           side="left"
-          className="background-light900_dark200 border-none  "
+          className="background-light900_dark200 border-none p-3"
         >
-          <SheetTitle className="hidden">Navigation</SheetTitle>
+          <SheetHeader>
+            <SheetTitle className="hidden">Navigation</SheetTitle>
+          </SheetHeader>
+
           {/* links to navigation  */}
-          <Link
-            href="/"
-            className="flex items-center h-auto w-full p-4 space-x-2 "
-          >
+          <Link href="/" className="flex items-center gap-2 -mt-3 mb-2">
             <Image
               src="/images/site-logo.svg"
               width={23}
@@ -41,7 +41,6 @@ const MobileNavigation = () => {
               alt="Logo"
             />
 
-            {/*logo text   */}
             {/*logo text   */}
             <p className="h2-bold font-space-grotesk text-dark-100 dark:text-light-900 ">
               {/* device lowert than 640 px we hide the logo  */}
@@ -51,14 +50,13 @@ const MobileNavigation = () => {
 
           <div className="no-scrollbar flex h-[calc(100vh-80px)] flex-col justify-between overflow-y-auto">
             <SheetClose asChild>
-              <section className="flex h-full flex-col gap-6 pt-16 ">
-                {/* render the components here  */}
+              <section className="flex h-full flex-col gap-6  ">
                 <NavLinks isMobileNav={true} />
               </section>
             </SheetClose>
 
-            {/* SignIn and Sign Up Links */}
-            <div className="flex flex-col gap-3 mt-6">
+            {/* SignIn Links */}
+            <div className="flex flex-col gap-3">
               <SheetClose asChild>
                 <Link href={ROUTES.SIGN_IN}>
                   <Button className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 ">
@@ -69,10 +67,10 @@ const MobileNavigation = () => {
 
               <SheetClose asChild>
                 <Link href={ROUTES.SIGN_UP}>
-                  <Button className="small-medium light-border-2 btn-tertiary w-full rounded-lg  text-dark400_light900 min-h-[41px] border px-4 py-3 mb-3 shadow-none">
+                  <Button className="small-medium light-border-2 btn-tertiary w-full rounded-lg  text-dark400_light900 min-h-[41px] border px-4 py-3 mb-2 shadow-none">
                     Sign Up
                   </Button>
-                </Link>
+                </Link> 
               </SheetClose>
             </div>
           </div>
