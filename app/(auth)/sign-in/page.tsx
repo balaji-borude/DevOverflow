@@ -11,7 +11,9 @@ import { success } from "zod";
 const SignIn = () => {
   return (
     <div>
-      signInn
+      SignIn
+
+        {/* import the Auth Form component */}
       <AuthForms
         formType="SIGN_IN"
         Schema={SignInSchema}

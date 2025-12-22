@@ -206,7 +206,7 @@ body {
 }
 
 @utility text-dark300_light900 {
-  @apply text-dark-300! dark:text-light-900!;
+  @apply text-dark-300 dark:text-light-900!;
 }
 
 @utility text-dark400_light800 {

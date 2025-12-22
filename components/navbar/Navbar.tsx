@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import {ThemeToggler} from "./ThemeToggler";
+import { ThemeToggler } from "./ThemeToggler";
+import MobileNavigation from "../MobileNavigation";
 
 const Navbar = () => {
   return (
@@ -24,18 +25,31 @@ const Navbar = () => {
       {/* searchbar  */}
       <div className="lg:w-[600px] md:w-[400px] flex justify-center ">
         {/* <p>searchbox</p> */}
-        <input type="text" placeholder="Search..."  className="w-full  outline-1 p-1 pl-3 rounded-2"/>
-
+        <input
+          type="text"
+          placeholder="Search..."
+          className="w-full  outline-1 p-1 pl-3 rounded-2"
+        />
       </div>
+
+      {/* .flex-between {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+          } */}
 
       {/* dark theme togglere  */}
-      <div className="flex-between gap-5">
-        {/* theme toggler */}
-        <ThemeToggler/>
+
+      <div >
+        <ThemeToggler />
       </div>
 
-      {/* autheticated user icons */}
+{/*mobile Navbar   */}
+        <MobileNavigation/>
 
+
+
+      {/* autheticated user icons */}
     </nav>
   );
 };
