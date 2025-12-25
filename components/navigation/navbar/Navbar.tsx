@@ -1,11 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ThemeToggler } from "./ThemeToggler";
-import MobileNavigation from "../MobileNavigation";
+import MobileNavigation from "./MobileNavigation";
 
 const Navbar = () => {
   return (
-    <nav className="flex-between background-light900_dark200 fixed z-50 w-full gap-5 p-6 shadow-light-300 dark:shadow-none sm:px-12">
+    <nav className="  w-full flex-between background-light900_dark200 fixed z-50 gap-5 p-6 shadow-light-300 dark:shadow-none sm:px-12">
       {/* Logo */}
       <Link href="/" className="flex items-center gap-1">
         <Image
@@ -23,8 +23,8 @@ const Navbar = () => {
       </Link>
 
       {/* searchbar  */}
-      <div className="lg:w-[600px] md:w-[400px] flex justify-center ">
-        {/* <p>searchbox</p> */}
+      <div className="w-[100px] sm:w-[300px]   flex justify-center ">
+   
         <input
           type="text"
           placeholder="Search..."
@@ -40,14 +40,11 @@ const Navbar = () => {
 
       {/* dark theme togglere  */}
 
-      <div >
+      <div className="flex gap-x-2">
         <ThemeToggler />
+        {/*mobile Navbar   */}
+        <MobileNavigation />
       </div>
-
-{/*mobile Navbar   */}
-        <MobileNavigation/>
-
-
 
       {/* autheticated user icons */}
     </nav>

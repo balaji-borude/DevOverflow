@@ -3,8 +3,6 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -12,21 +10,21 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import ROUTES from "@/constants/route";
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 import NavLinks from "./NavLinks";
 
 const MobileNavigation = () => {
   return (
     <div>
       <Sheet>
-        <SheetTrigger asChild>
+        <SheetTrigger asChild className="block sm:hidden">
           <Image src="/icons/hamburger.svg" width={36} height={36} alt="menu" />
         </SheetTrigger>
 
         {/*Main sidebar section is here   */}
         <SheetContent
           side="left"
-          className="background-light900_dark200 border-none p-3"
+          className="background-light900_dark200 border-none p-3 "
         >
           <SheetHeader>
             <SheetTitle className="hidden">Navigation</SheetTitle>
@@ -70,7 +68,7 @@ const MobileNavigation = () => {
                   <Button className="small-medium light-border-2 btn-tertiary w-full rounded-lg  text-dark400_light900 min-h-[41px] border px-4 py-3 mb-2 shadow-none">
                     Sign Up
                   </Button>
-                </Link> 
+                </Link>
               </SheetClose>
             </div>
           </div>
