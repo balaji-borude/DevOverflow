@@ -235,7 +235,7 @@ body {
 }
 
 @utility h1-bold {
-  @apply text-[30px] font-bold leading-[42px] tracking-tighter bg-red-500;
+  @apply text-[30px] font-bold leading-[42px] tracking-tighter;
 }
 
 @utility h2-bold {

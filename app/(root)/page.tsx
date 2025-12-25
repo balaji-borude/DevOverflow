@@ -14,7 +14,7 @@ const Home = async () => {
 
   return (
     <div>
-      This is a HomePage
+      <h1 className=" text-red-400 text-[30px] font-bold leading-[42px] tracking-tighter text-center  "> Website Under devlopment .............. </h1>
       
 
 
