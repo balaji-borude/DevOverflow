@@ -55,10 +55,10 @@ const RightSideBar = () => {
             );
           })}
         </div>
+        {/* Popular tags  */}
+        <h3 className="h3-bold text-dark100_light900 mt-6">popular tags</h3>
+        
       </div>
-
-      {/* Popular tags  */}
-      <div className="h3-bold text-dark100_light900">popular tags</div>
     </section>
   );
 };
