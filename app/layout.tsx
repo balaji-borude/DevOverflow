@@ -34,14 +34,20 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* 1. auth.js sathi sessionProvider madhe wrap karaychi whole app chi body 
-      2. 
-      
-      */}
+      {/* 1. auth.js sathi sessionProvider madhe wrap karaychi whole app chi body
+       */}
+
+      <head>
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+        />
+      </head>
 
       <SessionProvider session={session}>
         <body
-        suppressHydrationWarning
+          suppressHydrationWarning
           className={`${InterFont.variable} ${spaceGroteskFont.variable} antialiased`}
         >
           <ThemeProvider
@@ -55,8 +61,6 @@ export default async function RootLayout({
 
           {/* Toaster by shadcn Sooner  */}
           <Toaster />
-
-
         </body>
       </SessionProvider>
     </html>

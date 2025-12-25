@@ -1,31 +1,41 @@
 import Image from "next/image";
 import Link from "next/link";
+import TagCards from "../cards/TagCards";
 
 interface questionProps {
-  id: string;
+  _id: string;
   title: string;
 }
 const topQuestions: questionProps[] = [
   {
-    id: "1",
+    _id: "1",
     title: "How to center a Div ?",
   },
   {
-    id: "2",
+    _id: "2",
     title: "How to setup React + tailwindcss Project ?",
   },
   {
-    id: "3",
+    _id: "3",
     title: "what is Redux ToolKit  ?",
   },
   {
-    id: "4",
+    _id: "4",
     title: "Is React-RouterDom is Updated & how to create routes in react ?",
   },
   {
-    id: "5",
+    _id: "5",
     title: "No more question Everything is fine because of BajrangBali ",
   },
+];
+
+const popularTags = [
+  { _id: "1", name: "React", questions: 90 },
+  { _id: "3", name: "Express.js", questions: 290 },
+  { _id: "2", name: "Next.js", questions: 190 },
+  { _id: "4", name: "Flask", questions: 10 },
+  { _id: "5", name: "Python", questions: 80 },
+  { _id: "6", name: "Java", questions: 30 },
 ];
 
 const RightSideBar = () => {
@@ -40,8 +50,8 @@ const RightSideBar = () => {
           {topQuestions.map((question) => {
             return (
               <Link
-                href={`question/${question.id}`}
-                key={question.id}
+                href={`question/${question._id}`}
+                key={question._id}
                 className=" h-full w-full flex gap-x-6 items-center  "
               >
                 <Image
@@ -55,9 +65,19 @@ const RightSideBar = () => {
             );
           })}
         </div>
-        {/* Popular tags  */}
-        <h3 className="h3-bold text-dark100_light900 mt-6">popular tags</h3>
-        
+      </div>
+
+      {/* Popular tags  */}
+      <h3 className="h3-bold text-dark100_light900 mt-6">popular tags</h3>
+      <div className="mt-16">
+        <div className="h3-bold text-dark200_light900">
+          <div className="mt-7 flex flex-col gap-4">
+            {popularTags.map(({ _id, name, questions }) => (
+              <TagCards key={_id} _id={_id} name={name} questions={questions} 
+              showcount compact/>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
