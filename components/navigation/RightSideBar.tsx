@@ -30,12 +30,12 @@ const topQuestions: questionProps[] = [
 ];
 
 const popularTags = [
-  { _id: "1", name: "React", questions: 90 },
-  { _id: "3", name: "Express.js", questions: 290 },
-  { _id: "2", name: "Next.js", questions: 190 },
-  { _id: "4", name: "Flask", questions: 10 },
-  { _id: "5", name: "Python", questions: 80 },
-  { _id: "6", name: "Java", questions: 30 },
+  { _id: "1", name: "react", questions: 90 },
+  { _id: "3", name: "express", questions: 290 },
+  { _id: "4", name: "javascript", questions: 10 },
+  { _id: "2", name: "next", questions: 190 },
+  { _id: "5", name: "python", questions: 80 },
+  { _id: "6", name: "java", questions: 30 },
 ];
 
 const RightSideBar = () => {
@@ -46,7 +46,7 @@ const RightSideBar = () => {
         <h3 className="h3-bold text-dark100_light900"> Hot Network </h3>
 
         {/* all questions are here  */}
-        <div className="mt-7 flex w-full flex-col gap-y-3 ">
+        <div className="mt-5 flex w-full flex-col gap-y-3 ">
           {topQuestions.map((question) => {
             return (
               <Link
@@ -68,8 +68,8 @@ const RightSideBar = () => {
       </div>
 
       {/* Popular tags  */}
-      <h3 className="h3-bold text-dark100_light900 mt-6">popular tags</h3>
-      <div className="mt-16">
+      <h3 className="h3-bold text-dark100_light900 mt-5">popular tags</h3>
+      <div className="">
         <div className="h3-bold text-dark200_light900">
           <div className="mt-7 flex flex-col gap-4">
             {popularTags.map(({ _id, name, questions }) => (

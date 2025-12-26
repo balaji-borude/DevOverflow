@@ -58,6 +58,7 @@ const AuthForm = <T extends FieldValues>({
     defaultValues: defaultValues as DefaultValues<T>,
   });
 
+  // form handler
   const handleSubmit: SubmitHandler<T> = async (data) => {
     const result = await onSubmit(data);
 
@@ -75,6 +76,8 @@ const AuthForm = <T extends FieldValues>({
   };
 
   const buttonText = formType === "SIGN_IN" ? "Sign In" : "Sign Up";
+
+    // TODOOO ===> apply eye icon for password seen or unseen functionality 
 
   return (
     <Form {...form}>
@@ -97,7 +100,11 @@ const AuthForm = <T extends FieldValues>({
                 <FormControl>
                   <Input
                     required
+                    {...field}
+                    placeholder={`Enter your ${field.name}`}
                     type={field.name === "password" ? "password" : "text"}
+                    //placeholder="Enter your Password"
+                    //type={field.name === "password" ? "password" : "text"}
                     {...field}
                     className="paragraph-regular background-light900_dark300 light-border-2 text-dark300_light700 no-focus rounded-1.5 min-h-12 border"
                   />

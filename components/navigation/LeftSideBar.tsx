@@ -13,31 +13,38 @@ const LeftSideBar = () => {
       </div>
 
       <div className="flex flex-col gap-3">
-          <Button className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 ">
         <Link href={ROUTES.SIGN_IN}>
-        <Image
-            src="/icons/account.svg"
-            width={20}
-            height={20}
-            alt="icons"
-            className="invert-colors lg:hidden "
-        />
-            <span className="primary-text-gradient max-lg:hidden">Log In</span>
-        </Link>
+          <Button
+            asChild
+            className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3"
+          >
+            <span className="flex items-center gap-2">
+              <Image
+                src="/icons/account.svg"
+                width={20}
+                height={20}
+                alt="icon"
+                className="invert-colors lg:hidden"
+              />
+              <span className="primary-text-gradient max-lg:hidden">
+                Log In
+              </span>
+            </span>
           </Button>
+        </Link>
 
-        <Button className="small-medium light-border-2 btn-tertiary w-full rounded-lg  text-dark400_light900 min-h-[41px] border px-4 py-3 mb-2 shadow-none">
           <Link href={ROUTES.SIGN_UP}>
+        <Button className="small-medium light-border-2 btn-tertiary w-full rounded-lg  text-dark400_light900 min-h-[41px] border px-4 py-3 mb-2 shadow-none cursor-pointer">
             <Image
-            src="/icons/sign-up.svg"
-            width={20}
-            height={20}
-            alt="icons"
-            className="invert-colors lg:hidden "
-        />
-          <span className="max-lg:hidden">Sign Up</span>
-          </Link>
+              src="/icons/sign-up.svg"
+              width={20}
+              height={20}
+              alt="icons"
+              className="invert-colors lg:hidden "
+            />
+            <span className="max-lg:hidden">Sign Up</span>
         </Button>
+          </Link>
       </div>
     </section>
   );
