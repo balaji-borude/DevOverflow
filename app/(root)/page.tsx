@@ -19,8 +19,8 @@ const Home = async () => {
   return (
     <>
        <h1 className=" text-red-400 text-[30px] font-bold leading-[42px] tracking-tighter text-center  ">
-          {" "}
-          Website Under devlopment ..............{" "}
+    
+          Website Under devlopment
         </h1> 
       <div className="flex w-full flex-col-reverse sm:flex-row justify-between gap-4 sm:items-center">
      
