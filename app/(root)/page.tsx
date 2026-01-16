@@ -1,4 +1,3 @@
-
 import { auth, signOut } from "@/auth";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
@@ -18,13 +17,10 @@ const Home = async () => {
 
   return (
     <>
-       <h1 className=" text-red-400 text-[30px] font-bold leading-[42px] tracking-tighter text-center  ">
-    
-          Website Under devlopment
-        </h1> 
+      <h1 className=" text-red-400 text-[30px] font-bold leading-[42px] tracking-tighter text-center  ">
+        Website Under devlopment .....
+      </h1>
       <div className="flex w-full flex-col-reverse sm:flex-row justify-between gap-4 sm:items-center">
-     
-
         <h1 className="h1-bold text-dark100_light900"> All Questions </h1>
 
         <Button
@@ -35,16 +31,21 @@ const Home = async () => {
         </Button>
       </div>
 
-      {/* local search  */}
+      {/* local search compoonents   */}
       <section className="mt-11">
         {/* Localsearch --> Props pass kele  */}
-      <LocalSearch placeholder="Search .. " otherClasses="" route="/" imgSrc="/icons/search.svg" />
+        <LocalSearch
+          placeholder="Search .. "
+          otherClasses="flex-1"
+          route="/"
+          imgSrc="/icons/search.svg"
+        />
       </section>
 
+      {/* question card  */}
       <section className="mt-11">
         HomeFilter
         <div className="mt-10 flex w-full flex-col gap-6">
-
           <p> Question card </p>
         </div>
       </section>
