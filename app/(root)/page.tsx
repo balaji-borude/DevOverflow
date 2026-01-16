@@ -1,4 +1,5 @@
-import { auth, signOut } from "@/auth";
+import { auth } from "@/auth";
+import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/route";
@@ -79,7 +80,8 @@ const Home = async ({searchParams}:SearchParams) => {
 
       {/* question card  */}
       <section className="mt-11">
-        HomeFilter tags 
+       
+        <HomeFilter/> 
         <div className="mt-10 flex w-full flex-col gap-6">
           {/* <p> Question card </p>
            */}
