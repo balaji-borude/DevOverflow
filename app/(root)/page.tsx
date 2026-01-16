@@ -3,10 +3,45 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/route";
 import Link from "next/link";
-import React from "react";
-import { toast } from "sonner";
 
-const Home = async () => {
+interface QuestionProps {
+  title: string;
+  description: string;
+  _id: string;
+}
+
+const questions: QuestionProps[] = [
+  {
+    _id: "1",
+    title: "what is react",
+    description: "from where should I learn react",
+  },
+  {
+    _id: "2",
+    title: "what is javascript",
+    description: "from where should I learn js",
+  },
+];
+
+interface SearchParams{
+  searchParams: Promise<{[key:string]:string}>;
+}
+
+const Home = async ({searchParams}:SearchParams) => {
+
+  // searchparams madhun query ghene ani 
+  const {query=""} = await searchParams;
+
+  // here api call for the Query that we wantot execute 
+  // const data = await axios.get(/getquestions/data);
+ 
+  // but above we have questions array -- react and javascript so that we can apply filter by using the two array object of questions
+
+  const filteredQuestions = questions.filter((question)=>question.title.toLowerCase().includes(query?.toLocaleLowerCase()))
+
+      // warchaya questions chya array madhun apan question filter krt ahe 
+
+
   const session = await auth();
   console.log("Looged in user session --> ", session);
 
@@ -44,9 +79,15 @@ const Home = async () => {
 
       {/* question card  */}
       <section className="mt-11">
-        HomeFilter
+        HomeFilter tags 
         <div className="mt-10 flex w-full flex-col gap-6">
-          <p> Question card </p>
+          {/* <p> Question card </p>
+           */}
+
+          {filteredQuestions.map((ques) => (
+            <p key={ques._id}>{ques.title}</p>
+         
+          ))}
         </div>
       </section>
     </>

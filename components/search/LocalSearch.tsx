@@ -17,7 +17,7 @@ interface Props {
 const LocalSearch = ({ otherClasses, placeholder, route, imgSrc }: Props) => {
   // search params from next navigation
   const searchParams = useSearchParams();
-  const query = searchParams.get("query") || ""; // if the chage occure then only change the URl 
+  const query = searchParams.get("query") || ""; // if the chage occure then only change the URl
 
   const [searchQuery, setSearchQuery] = useState(query);
 
@@ -25,31 +25,39 @@ const LocalSearch = ({ otherClasses, placeholder, route, imgSrc }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
 
-// const currentQuery = searchParams.get("query") || ""; //
+  // const currentQuery = searchParams.get("query") || ""; //
 
   useEffect(() => {
     if (searchQuery === query) return; // no change, no push --> only push when there is chage in the searchbar
 
-    if (searchQuery) {
-      const newUrl = formUrlQuery({
-        params: searchParams.toString(),
-        key: "query",
-        value: searchQuery,
-      });
-
-      router.push(newUrl, { scroll: false });
-
-    } else {
-      if (pathname === route) {
-        const newUrl = removeKeyFromQuery({
+    // debounceing
+    const delayDebounceFn = setTimeout(() => {
+      //alert("debounced the query ");
+      if (searchQuery) {
+        const newUrl = formUrlQuery({
           params: searchParams.toString(),
-          keysToRemove: ["query"],
+          key: "query",
+          value: searchQuery,
         });
 
         router.push(newUrl, { scroll: false });
+      } else {
+        if (pathname === route) {
+          const newUrl = removeKeyFromQuery({
+            params: searchParams.toString(),
+            keysToRemove: ["query"],
+          });
+
+          router.push(newUrl, { scroll: false });
+        }
       }
-    }
+    }, 2000);
+
+    return () => clearTimeout(delayDebounceFn);
   }, [searchQuery, router, route, searchParams]);
+
+  // here is every charecter got an request so that this is not Optimal solution for the searching text
+  // what is optimal --> Debounceing  ? use it
 
   return (
     <div
