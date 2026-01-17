@@ -1,5 +1,4 @@
-import qs from 'query-string';
-import { string } from 'zod';
+import qs from 'query-string'; // This is a library 
 
 interface UrlQueryParams {
     params:string,
@@ -15,8 +14,8 @@ interface RemoveUrlQueryParams {
 export const formUrlQuery = ({params,key, value}:UrlQueryParams)=>{
 
     const queryString = qs.parse(params);
-
     queryString[key] = value;
+
     return qs.stringifyUrl({
         url:window.location.pathname,
         query:queryString

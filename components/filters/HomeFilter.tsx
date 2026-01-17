@@ -27,13 +27,14 @@ const HomeFilter = () => {
     let newUrl = "";
 
     if (filter === active) {
-      setActive("");
-      setActive(filter);
+      setActive("");  // selected and user again select sam button then unselect the 
+      // setActive(filter);
       newUrl = removeKeyFromQuery({
         params: searchParams.toString(),
         keysToRemove: ["filter"],
       });
     } else {
+      setActive(filter);
       newUrl = formUrlQuery({
         params: searchParams.toString(),
         key: "filter",
@@ -42,19 +43,28 @@ const HomeFilter = () => {
     }
     router.push(newUrl, { scroll: false });
   };
+  const base = "body-medium rounded-lg px-6 py-3 capitalize shadow-none cursor-pointer";
+const activeStyle = " bg-primary-100 text-primary-500 hover:bg-primary-100 dark:bg-dark-400 dark:text-primary-500 dark:hover:bg-dark-400";
+const inactiveStyle = "bg-light-800 text-light-500 hover:bg-light-800 dark:bg-dark-300 dark:text-light-500 dark:hover:bg-dark-300";
+
   return (
-    <div className="mt-10 hidden flex-wrap gap-3 sm:flex">
-      {/* small evice la hidden kela ahe  */}
+    <div className="mt-10 hidden flex-wrap gap-3 sm:flex sm:justify-center">
+      {/* small device la hidden kela ahe  */}
+      
       {filters.map((filter, index) => (
         <Button
           key={index}
-          className={cn(
-            ` body-medium rounded-lg px-6 py-3 capitalize shadow-none cursor-pointer`,
-            active === filter.value
-              ? // if selected then
-                " bg-primary-100 text-primary-500 hover:bg-primary-100 dark:bg-dark-400 dark:text-primary-500 dark:hover:bg-dark-400"
-              : "bg-light-800 text-light-500 hover:bg-light-800 dark:bg-dark-300 dark:text-light-500 dark:hover:bg-dark-300"
-          )}
+          // className={cn(
+          //   ` body-medium rounded-lg px-6 py-3 capitalize shadow-none cursor-pointer`,
+          //   active === filter.value
+          //     ? 
+          //       " bg-primary-100 text-primary-500 hover:bg-primary-100 dark:bg-dark-400 dark:text-primary-500 dark:hover:bg-dark-400"
+          //     : "bg-light-800 text-light-500 hover:bg-light-800 dark:bg-dark-300 dark:text-light-500 dark:hover:bg-dark-300",
+          // )}
+
+          // insted of the CN class we can use brutforce it seem to be complicated 
+          
+         className={`${base} ${active === filter.value ? activeStyle : inactiveStyle}`}
           onClick={() => handleClick(filter.value)}
         >
           {filter.name}
