@@ -22,12 +22,9 @@ export const SignUpSchema = z.object({
       message: "Username can only contain letters, numbers and underscores.",
     }),
 
-  name: z
-    .string()
-    .min(1, { message: "Name is Required" })
-    .max(50, {
-      message: "Username can only contain letters, numbers,and underscores.",
-    }),
+  name: z.string().min(1, { message: "Name is Required" }).max(50, {
+    message: "Username can only contain letters, numbers,and underscores.",
+  }),
 
   email: z
     .string()
@@ -48,4 +45,19 @@ export const SignUpSchema = z.object({
     .regex(/[^a-zA-Z0-9]/, {
       message: "Password must contain At least One Special character",
     }),
+});
+
+export const AskQuestionSchema = z.object({
+  title: z
+    .string()
+    .min(5, { message: "Title must be at least 5 characters long" })
+    .max(150, { message: "Title cannot exceed 150 characters" }),
+  content: z.string().min(1, { message: "Body is requried" }),
+  tags: z
+    .array(z.string()
+    .min(1, { message: "Tag cannot be empty" })
+    .max(30, { message: "Tag cannot exceed 30 characters" })
+  )
+    .min(1, { message: "Please provide at least one tag" })
+    .max(3, { message: "Can Not add more than 3 tags" }),
 });
