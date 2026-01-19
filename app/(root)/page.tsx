@@ -31,7 +31,7 @@ const questions: QuestionProps[] = [
     author: {
       _id: "u1",
       name: "Balaji",
-      image: "/images/user1.png",
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSToP5rz4ky9W48e8f3kQ8gdA_b7fyyjP68Eg&s",
     },
     createdAt: new Date("2024-12-01"),
     upvotes: 12,
@@ -45,11 +45,13 @@ const questions: QuestionProps[] = [
     tags: [
       { _id: "t3", name: "javascript" },
       { _id: "t4", name: "programming" },
+      
     ],
     author: {
       _id: "u2",
       name: "Aarav",
-      image: "/images/user2.png",
+      // have to set the DiceBear Api here for profile Picture 
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSToP5rz4ky9W48e8f3kQ8gdA_b7fyyjP68Eg&s",
     },
     createdAt: new Date("2024-12-05"),
     upvotes: 25,
