@@ -42,12 +42,14 @@ import { basicDark } from "cm6-theme-basic-dark";
 import "./dark-editor.css";
 import { useTheme } from "next-themes";
 
-const Editor = ({
-  editorRef,
-  //   value,
-  //   fieldChange,
-  ...props
-}: { editorRef: ForwardedRef<MDXEditorMethods> | null } & MDXEditorProps) => {
+type EditorProps = {
+  editorRef: ForwardedRef<MDXEditorMethods> | null;
+  markdown: string;
+  onChange: (value: string) => void;
+};
+
+
+const Editor = ({ editorRef, markdown, onChange }: EditorProps) => {
   // cm6-theme-basic-dark package provides a basic dark theme for the editor
 
   const { resolvedTheme } = useTheme();
@@ -58,6 +60,9 @@ const Editor = ({
     <div>
       <MDXEditor
         key={resolvedTheme}
+     
+      markdown={markdown}
+      onChange={onChange}
         // styling for editor
         className="background-light800_dark200 light-border-2 markdown-editor dark-editor w-full border"
         plugins={[
@@ -140,7 +145,7 @@ const Editor = ({
             },
           }),
         ]}
-        {...props}
+        
         ref={editorRef}
       />
     </div>

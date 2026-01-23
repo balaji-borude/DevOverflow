@@ -14,8 +14,8 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
- import { Button } from "../ui/button";
- 
+import { Button } from "../ui/button";
+
 import Editor from "../editor";
 
 const QuestionForms = () => {
@@ -30,8 +30,8 @@ const QuestionForms = () => {
   });
 
   // handle create question function
-  const handleCreateQuestion = () => {
-    // console.log(data);
+  const handleCreateQuestion = (data: any) => {
+    console.log(data);
   };
 
   return (
@@ -74,18 +74,21 @@ const QuestionForms = () => {
         <FormField
           control={form.control}
           name="content"
-          render={() => (
+          render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light700">
                 Detailed explanation of the Problem{" "}
                 <span className="text-primary-500">*</span>
               </FormLabel>
+
               <FormControl>
-                {/* Editor  */}
-                <Editor editorRef={null} markdown={""} />
+                <Editor
+                  markdown={field.value ?? ""}
+                  onChange={field.onChange}
+                  editorRef={null}
+                />
               </FormControl>
 
-              {/* form description */}
               <FormDescription className="body-regular text-light-500 mt-2.5">
                 Introduce the problem and expand on what you put in the title.
               </FormDescription>
@@ -96,35 +99,41 @@ const QuestionForms = () => {
         />
 
         {/* tags */}
-        <FormField
-          control={form.control}
-          name="tags"
-          render={({ field }) => (
-            <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="paragraph-semibold text-dark400_light700">
-                Tags<span className="text-primary-500">*</span>
-              </FormLabel>
-              <FormControl>
-                <div>
-                  <Input
-                    required
-                    {...field}
-                    placeholder="Add Tags"
-                    {...field}
-                    className="paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 no-focus min-h-14 border"
-                  />
-                </div>
-              </FormControl>
+<FormField
+  control={form.control}
+  name="tags"
+  render={({ field }) => (
+    <FormItem className="flex w-full flex-col gap-3">
+      <FormLabel className="paragraph-semibold text-dark400_light700">
+        Tags <span className="text-primary-500">*</span>
+      </FormLabel>
 
-              {/* form description */}
-              <FormDescription className="body-regular text-light-500 mt-2.5">
-                Add upto 3 tags to describe what your question is about. you need to press enter to add the tag.
-              </FormDescription>
+      <FormControl>
+        <Input
+          placeholder="Add tags separated by commas"
+          value={field.value?.join(", ")}
+          onChange={(e) => {
+            const value = e.target.value;
+            const tagsArray = value
+              .split(",")
+              .map(tag => tag.trim())
+              .filter(Boolean);
 
-              <FormMessage />
-            </FormItem>
-          )}
+            field.onChange(tagsArray);
+          }}
+          className="paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 no-focus min-h-14 border"
         />
+      </FormControl>
+
+      <FormDescription className="body-regular text-light-500 mt-2.5">
+        Add up to 3 tags separated by commas (e.g. react, nextjs, typescript)
+      </FormDescription>
+
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+
         {/* button */}
         <div className="mt-16 flex justify-end">
           <Button className="primary-gradient w-fit text-light-900">
