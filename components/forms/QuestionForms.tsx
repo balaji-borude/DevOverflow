@@ -14,7 +14,9 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+ import { Button } from "../ui/button";
+ 
+import Editor from "../editor";
 
 const QuestionForms = () => {
   // form validation import from ./validations.ts file
@@ -72,13 +74,16 @@ const QuestionForms = () => {
         <FormField
           control={form.control}
           name="content"
-          render={({ field }) => (
+          render={() => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light700">
                 Detailed explanation of the Problem{" "}
                 <span className="text-primary-500">*</span>
               </FormLabel>
-              <FormControl>Editor</FormControl>
+              <FormControl>
+                {/* Editor  */}
+                <Editor editorRef={null} markdown={""} />
+              </FormControl>
 
               {/* form description */}
               <FormDescription className="body-regular text-light-500 mt-2.5">
