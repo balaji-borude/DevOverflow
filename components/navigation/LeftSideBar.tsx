@@ -7,12 +7,13 @@ import Image from "next/image";
 
 const LeftSideBar = () => {
   return (
-    <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 h-screen flex flex-col justify-between border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px] ">
-      <div className="flex flex-1 flex-col gap-6 ">
+    <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 h-screen flex flex-col justify-between  border-r p-6 pt-24 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px] ">
+
+      <div className="flex flex-1 flex-col  gap-6 ">
         <NavLinks />
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col space-y-4">
         <Link href={ROUTES.SIGN_IN}>
           <Button
             asChild
@@ -33,8 +34,8 @@ const LeftSideBar = () => {
           </Button>
         </Link>
 
-          <Link href={ROUTES.SIGN_UP}>
-        <Button className="small-medium light-border-2 btn-tertiary w-full rounded-lg  text-dark400_light900 min-h-[41px] border px-4 py-3 mb-2 shadow-none cursor-pointer">
+        <Link href={ROUTES.SIGN_UP}>
+          <Button className="small-medium light-border-2 btn-tertiary w-full rounded-lg  text-dark400_light900 min-h-[41px] border px-4 py-3 mb-2 shadow-none cursor-pointer">
             <Image
               src="/icons/sign-up.svg"
               width={20}
@@ -43,8 +44,8 @@ const LeftSideBar = () => {
               className="invert-colors lg:hidden "
             />
             <span className="max-lg:hidden">Sign Up</span>
-        </Button>
-          </Link>
+          </Button>
+        </Link>
       </div>
     </section>
   );

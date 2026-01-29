@@ -116,7 +116,7 @@ const QuestionForms = () => {
 
               <FormControl>
                 <Input
-                  required
+               
                   {...field}
                   placeholder={`Enter your ${field.name}`}
                   className="paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 no-focus min-h-14 border"
