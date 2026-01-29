@@ -23,10 +23,9 @@ const Metrics = ({
   imgStyles,
   isAuthor,
 }: Props) => {
-
-    // main contetn want to display
+  // main contetn want to display
   const metricContent = (
-    <div className="flex-center flex gap-1" >
+    <div className="flex-center flex gap-1">
       <Image
         src={imgUrl}
         width={16}
@@ -35,17 +34,23 @@ const Metrics = ({
         className={`${imgStyles} rounded-full object-contain`}
       />
 
-      <p className={`${textStyles} flex items-center gap-1`}>
-        {value}
-      </p>
+      <p className={`${textStyles} flex items-center gap-1`}>{value}</p>
 
-      <span className={`small-regular  text-dark400_light700 ${isAuthor ? "max-sm:hidden" : ""}`}>   
+      <span
+        className={`small-regular  text-dark400_light700 ${isAuthor ? "max-sm:hidden" : ""}`}
+      >
         {title}
       </span>
-
     </div>
   );
-  return href ? (<Link href={href} className="flex-center flex gap-1"> {metricContent}</Link>) : (<div>{metricContent}</div>)
+  return href ? (
+    <Link href={href} className="flex-center flex gap-1">
+      {" "}
+      {metricContent}
+    </Link>
+  ) : (
+    <div>{metricContent}</div>
+  );
 };
 
 export default Metrics;
