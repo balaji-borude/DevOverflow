@@ -42,6 +42,6 @@ const AnswerSchema = new Schema<IAnswer>({
 )
 
 // here also we need to check if the model is already defined then reuse it, if it not then create the model
-const Answer =models.Account || model<IAnswer >("Account",AnswerSchema);
+const Answer =models.Answer || model<IAnswer >("Answer",AnswerSchema);
 
 export default Answer;   
