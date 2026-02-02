@@ -1,10 +1,8 @@
 import {model,models, Schema,Types } from "mongoose";
 
-export interface IModel {
+export interface IModel {};
 
-};
-
-const accoutSchema = new Schema<IModel>({
+const ModelSchema = new Schema<IModel>({
   
 },{
     timestamps:true,
@@ -12,6 +10,6 @@ const accoutSchema = new Schema<IModel>({
 )
 
 // here also we need to check if the model is already defined then reuse it, if it not then create the model
-const Account =models.Account || model<IModel >("Account",accoutSchema);
+const Model =models.Account || model<IModel >("Account",ModelSchema);
 
-export default Account;
+export default Model;

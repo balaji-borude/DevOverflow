@@ -52,6 +52,6 @@ const QuestionSchema = new Schema<IQuestion>({
 )
 
 // here also we need to check if the model is already defined then reuse it, if it not then create the model
-const Account =models.Account || model<IQuestion >("Account",QuestionSchema);
+const Question =models.Account || model<IQuestion >("Account",QuestionSchema);
 
-export default Account; 
+export default Question; 
