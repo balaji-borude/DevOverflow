@@ -41,7 +41,7 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
     return formateResponse(
       responseType,
       validationError.message,
-      400,
+      validationError.statusCode,
       validationError.errors,
     );
   }
@@ -50,5 +50,10 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
     return formateResponse(responseType, error.message, 500);
   }
 
-  return formateResponse(responseType, "Something went wrong", 500);
+  return formateResponse(
+    responseType, "Something went wrong", 
+    500,
+  );
 };
+
+export default handleError;

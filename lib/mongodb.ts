@@ -1,6 +1,7 @@
 // mongoDB Connection file 
 
 import mongoose, { Mongoose } from "mongoose";
+import Logger from "./logger";
  
 const MONGO_URL = process.env.MONGO_URL;
 
@@ -29,6 +30,7 @@ if(!cached){
 const dbConnect = async():Promise<Mongoose>=>{
     // if there is alredy connection happen then return 
     if(cached.conn){
+        Logger.info("MongoDB Connection already cached");
         return cached.conn;
     };
 
@@ -38,7 +40,8 @@ const dbConnect = async():Promise<Mongoose>=>{
             dbName:"DevOverflow_DB" //we can give db name is url also 
         })
         .then((result)=>{
-            console.log("Db Connected Succesfully");
+            // console.log("Db Connected Succesfully");
+            Logger.info("Db Connected Succesfully");
             return result;
         })
         .catch((error)=>{

@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/route";
 import Link from "next/link";
 
+// import { NotFoundError, ValidationError } from "@/lib/http-errors";
+// import handleError from "@/lib/handlers/errors";
+
 interface QuestionProps {
   _id: string;
   title: string;
@@ -60,12 +63,24 @@ const questions: QuestionProps[] = [
   },
 ];
 
+// const test =async()=>{
+//   try {
+//     // throw new Error("test error");
+//     // throw new NotFoundError ("test error");
+//     throw new ValidationError({name:["name is required"]});
+//   } catch (error) {
+//     return handleError(error);
+//   }
+// }
 
 interface SearchParams{
   searchParams: Promise<{[key:string]:string}>;
 }
 
 const Home = async ({searchParams}:SearchParams) => {
+ 
+  // const result = await test();
+  // console.log("result", result);
 
   // searchparams madhun query ghene ani 
   const {query=""} = await searchParams;
