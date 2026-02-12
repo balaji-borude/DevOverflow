@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 import { RequestError, ValidationError } from "../http-errors";
+import Logger from "../logger";
 
 export type ResponseType = "api" | "server";
 
@@ -24,7 +25,12 @@ const formateResponse = (
 };
 
 const handleError = (error: unknown, responseType: ResponseType = "server") => {
+
+
   if (error instanceof RequestError) {
+    //showing the errors to the user--> using Logger
+    Logger.error({err:error},`{${responseType.toUpperCase()} Error: ${error.message}}`);
+
     return formateResponse(
       responseType,
       error.message,
@@ -38,6 +44,8 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
       error.flatten().fieldErrors as Record<string, string[]>,
     );
 
+    Logger.error({err:error},`Validation Error: ${validationError.message}}`);
+
     return formateResponse(
       responseType,
       validationError.message,
@@ -47,9 +55,13 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
   }
 
   if (error instanceof Error) {
+
+    Logger.error(`Error: ${error.message}}`); 
+
     return formateResponse(responseType, error.message, 500);
   }
 
+  Logger.error({err:error},`Something went wrong`);
   return formateResponse(
     responseType, "Something went wrong", 
     500,
@@ -57,3 +69,4 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
 };
 
 export default handleError;
+ 

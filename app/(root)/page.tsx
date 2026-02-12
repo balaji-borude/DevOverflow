@@ -4,6 +4,9 @@ import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/route";
+import handleError from "@/lib/handlers/errors";
+import { ValidationError } from "@/lib/http-errors";
+import dbConnect from "@/lib/mongodb";
 import Link from "next/link";
 
 // import { NotFoundError, ValidationError } from "@/lib/http-errors";
@@ -63,15 +66,16 @@ const questions: QuestionProps[] = [
   },
 ];
 
-// const test =async()=>{
-//   try {
-//     // throw new Error("test error");
-//     // throw new NotFoundError ("test error");
-//     throw new ValidationError({name:["name is required"]});
-//   } catch (error) {
-//     return handleError(error);
-//   }
-// }
+const test =async()=>{
+  try {
+    // throw new Error("test error");
+    // throw new NotFoundError ("test error");
+    // throw new ValidationError({name:["name is required"]});
+    await dbConnect();
+  } catch (error) {
+    return handleError(error);
+  }
+}
 
 interface SearchParams{
   searchParams: Promise<{[key:string]:string}>;
@@ -79,8 +83,8 @@ interface SearchParams{
 
 const Home = async ({searchParams}:SearchParams) => {
  
-  // const result = await test();
-  // console.log("result", result);
+   await test();
+  //  console.log("result", result); 
 
   // searchparams madhun query ghene ani 
   const {query=""} = await searchParams;

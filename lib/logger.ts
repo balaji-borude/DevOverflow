@@ -5,6 +5,7 @@ const isProduction = process.env.NODE_ENV === "production";
 
 const Logger = pino({
   level: process.env.LOG_LEVEL || "info",
+
   transport:
     !isEdge && !isProduction
       ? {
@@ -21,7 +22,8 @@ const Logger = pino({
   formatters: {
     level: (label: string) => ({ level: label.toUpperCase() }),
   },
-  timestamp: () => new Date().toISOString(),
-});
+  //timestamp: () => new Date().toISOString(),
+  timestamp:pino.stdTimeFunctions.isoTime,
+});4
 
 export default Logger;

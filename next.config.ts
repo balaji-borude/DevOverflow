@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here  --> here next js Image --> Next/Image only loads images from domains you explicitly trust */
+  serverExternalPackages:['pino','pino-pretty'],
   images: {
     domains: ["encrypted-tbn0.gstatic.com"],
   },

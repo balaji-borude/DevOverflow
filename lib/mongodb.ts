@@ -45,7 +45,8 @@ const dbConnect = async():Promise<Mongoose>=>{
             return result;
         })
         .catch((error)=>{
-            console.log("Issue in Db Connection ");
+            // console.log("Issue in Db Connection ");
+            Logger.error("Issue in Db Connection ",error);
             throw error
         })
     }
