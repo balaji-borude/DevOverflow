@@ -1,10 +1,13 @@
-// this file is used to handle the errors in the application
+// this file is used to handle the errors in the application;
+
 import { NextResponse } from "next/server";
-import { ZodError } from "zod";
+import { ZodError, z } from "zod";
 import { RequestError, ValidationError } from "../http-errors";
 import Logger from "../logger";
 
+// there is only two type of responsestype 
 export type ResponseType = "api" | "server";
+
 
 const formateResponse = (
   responseType: ResponseType,
@@ -40,8 +43,15 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
   }
 
   if (error instanceof ZodError) {
+    const { fieldErrors } = z.flattenError(error);
+    const normalizedFieldErrors = Object.fromEntries(
+      Object.entries(fieldErrors).filter(
+        (entry): entry is [string, string[]] => Array.isArray(entry[1]),
+      ),
+    );
+
     const validationError = new ValidationError(
-      error.flatten().fieldErrors as Record<string, string[]>,
+      normalizedFieldErrors,
     );
 
     Logger.error({err:error},`Validation Error: ${validationError.message}}`);

@@ -28,8 +28,9 @@ export const SignUpSchema = z.object({
 
   email: z
     .string()
-    .min(1, { message: "Email is Requried" })
-    .email({ message: "Please Provide a valid email address" }),
+    .trim()
+    .min(1, { error: "Email is required" })
+    .email({ error: "Please provide a valid email address" }),
 
   password: z
     .string()
@@ -54,10 +55,34 @@ export const AskQuestionSchema = z.object({
     .max(150, { message: "Title cannot exceed 150 characters" }),
   content: z.string().min(1, { message: "Body is requried" }),
   tags: z
-    .array(z.string()
-    .min(1, { message: "Tag cannot be empty" })
-    .max(30, { message: "Tag cannot exceed 30 characters" })
-  )
+    .array(
+      z
+        .string()
+        .min(1, { message: "Tag cannot be empty" })
+        .max(30, { message: "Tag cannot exceed 30 characters" }),
+    )
     .min(1, { message: "Please provide at least one tag" })
     .max(3, { message: "Can Not add more than 3 tags" }),
+});
+
+// Frontend validation for the users
+export const UserSchema = z.object({
+  name: z
+    .string()
+    .min(3, { message: "UserName must be at least 3 characters long" }),
+  username: z
+    .string()
+    .min(3, { message: "UserName must be at least 3 characters long" }),
+  email: z.email({ error: "Please provide a valid email address" }),
+  bio: z.string().optional(),
+  image: z
+    .string()
+    .url({ message: "Please provide a valid image url" })
+    .optional(),
+  location: z.string().optional(),
+  portfolio: z
+    .string()
+    .url({ message: "Please provide a valid portfolio url" })
+    .optional(),
+  reputation: z.number().optional(),
 });

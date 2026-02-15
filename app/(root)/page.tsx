@@ -5,7 +5,7 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/route";
 import handleError from "@/lib/handlers/errors";
-import { ValidationError } from "@/lib/http-errors";
+
 import dbConnect from "@/lib/mongodb";
 import Link from "next/link";
 
