@@ -4,7 +4,6 @@ import { NotFoundError, ValidationError } from "@/lib/http-errors";
 import { UserSchema } from "@/lib/validations";
 import { APIErrorResponse } from "@/types/global";
 import { NextResponse } from "next/server";
-import { success } from "zod";
 
 // get uer by email 
 export async function POST(request: Request) {
