@@ -68,13 +68,19 @@ const RightSideBar = () => {
       </div>
 
       {/* Popular tags  */}
-      <h3 className="h3-bold text-dark100_light900 mt-5">popular tags</h3>
+      <h3 className="h3-bold text-dark100_light900 mt-5">Popular Tags</h3>
       <div className="">
         <div className="h3-bold text-dark200_light900">
           <div className="mt-7 flex flex-col gap-4">
             {popularTags.map(({ _id, name, questions }) => (
-              <TagCards key={_id} _id={_id} name={name} questions={questions} 
-              showcount compact/>
+              <TagCards
+                key={_id}
+                _id={_id}
+                name={name}
+                questions={questions}
+                showcount
+                compact
+              />
             ))}
           </div>
         </div>

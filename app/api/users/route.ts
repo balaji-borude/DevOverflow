@@ -4,7 +4,6 @@ import dbConnect from "@/lib/mongodb";
 import { UserSchema } from "@/lib/validations";
 import { APIErrorResponse } from "@/types/global";
 import { NextResponse } from "next/server";
-import { success } from "zod";
 
 // get all users
 export async function GET() {
@@ -23,8 +22,9 @@ export async function GET() {
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
-}
+};
 
+// create User  
 export async function POST(request: Request) {
   try {
     await dbConnect();
@@ -73,4 +73,6 @@ export async function POST(request: Request) {
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
-}
+};
+
+
