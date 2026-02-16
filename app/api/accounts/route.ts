@@ -25,7 +25,7 @@ export async function GET() {
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
-}
+};
 
 // create account 
 export async function POST(request: Request) {
@@ -60,4 +60,4 @@ export async function POST(request: Request) {
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
-}
+};
