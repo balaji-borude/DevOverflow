@@ -108,6 +108,7 @@ export const accountSchema = z.object({
       message: "Password must contain At least One Special character",
     })
     .optional(),
+    // we use Otional here because sometime we used connecting with third party provider like google and github and we don't need to provide password
 
   provider: z.string().min(1, "Provider is required"),
 

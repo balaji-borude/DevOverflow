@@ -1,8 +1,9 @@
 import Account from "@/database/accout.model";
 import User from "@/database/user.model";
 import handleError from "@/lib/handlers/errors";
+import { ForbiddenError } from "@/lib/http-errors";
 import dbConnect from "@/lib/mongodb";
-import { UserSchema } from "@/lib/validations";
+import { accountSchema } from "@/lib/validations";
 import { APIErrorResponse } from "@/types/global";
 import { NextResponse } from "next/server";
 
@@ -33,42 +34,26 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     // validation
-    const validatedData = UserSchema.safeParse(body);
-    //console.log("validatedData", validatedData);
-
-    // validating the data
-    if (!validatedData.success) {
-      return Response.json(
-        {
-          success: false,
-          errors: validatedData.error.flatten().fieldErrors,
-        },
-        { status: 400 },
-      );
-    }
-
-    // get data from the validated data
-    const { email, username } = validatedData.data;
-
+    const validatedData = accountSchema.parse(body);
+    
     // check if the user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({
+        provider: validatedData.provider,
+        providerAccountId: validatedData.providerAccountId,
+    });
 
     if (existingUser) {
-      throw new Error("User already exists");
-    }
-    // check if the username already exists
-    const existingUsername = await User.findOne({ username });
+      throw new ForbiddenError(" An account with this provider and providerAccountId already exists");
+    };
 
-    if (existingUsername) {
-      throw new Error("Username already exists");
-    }
+ 
 
-    const newUser = await User.create(validatedData.data);
+    const newAccount = await Account.create(validatedData);
 
     return NextResponse.json(
       {
         success: true,
-        data: newUser,
+        data: newAccount,
       },
       { status: 201 },
     );
