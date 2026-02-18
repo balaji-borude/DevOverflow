@@ -14,7 +14,7 @@ interface FetchOptions extends RequestInit {
 // helper fuuction for the error 
 function isError(error:unknown):error is Error{
     return error instanceof Error;
-}
+};
 
 
 export async function fetchHandler<T>(
@@ -84,5 +84,5 @@ export async function fetchHandler<T>(
         return handleError(error) as ActionResponse<T>;
     }   
 
-}
+};
 
