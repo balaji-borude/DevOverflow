@@ -4,6 +4,7 @@
 import Account from "@/database/accout.model";
 import handleError from "@/lib/handlers/errors";
 import { NotFoundError, ValidationError } from "@/lib/http-errors";
+import dbConnect from "@/lib/mongodb";
 import { accountSchema } from "@/lib/validations";
 import { APIErrorResponse } from "@/types/global";
 import { NextResponse } from "next/server";
@@ -11,6 +12,9 @@ import { NextResponse } from "next/server";
 // get uer by email 
 export async function POST(request: Request) {
     try {
+
+        await dbConnect();
+        
         const {providerAccountId} = await request.json();
        
         const validatedData = accountSchema.partial().safeParse({providerAccountId});

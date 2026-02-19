@@ -39,7 +39,7 @@ export async function GET(
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
-}
+};
 
 // DELETE Account By id
 export async function DELETE(
@@ -80,7 +80,7 @@ export async function DELETE(
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
-}
+};
 
 // update Account By id
 export async function PUT(
@@ -121,4 +121,4 @@ export async function PUT(
   } catch (error) {
     return handleError(error, "api") as APIErrorResponse;
   }
-}
+};
