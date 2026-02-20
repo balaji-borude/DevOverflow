@@ -63,5 +63,15 @@ export const api = {
         }),
 
     },
-    
+    // oauth related API calls
+    Auth:{
+        oAuthSignIn:({user,provider,providerAccountId}:SigninWithOAuthParams)=>{
+            return fetchHandler(`${API_BASE_URL}/auth/signin-with-oauth`,{
+                method:"POST",
+                body:JSON.stringify({user,provider,providerAccountId}),
+            })
+            
+        }
+    }
+
 }
