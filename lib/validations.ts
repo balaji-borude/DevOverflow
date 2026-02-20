@@ -108,9 +108,25 @@ export const accountSchema = z.object({
       message: "Password must contain At least One Special character",
     })
     .optional(),
-    // we use Otional here because sometime we used connecting with third party provider like google and github and we don't need to provide password
+  // we use Otional here because sometime we used connecting with third party provider like google and github and we don't need to provide password
 
   provider: z.string().min(1, "Provider is required"),
 
   providerAccountId: z.string().min(1, "Provider Account ID is required"),
+});
+
+// signin validation for the OAuth schema
+export const SignInWithOAuthSchema = z.object({
+  provider: z.enum(["google", "github"]),
+  providerAccountId: z
+    .string()
+    .min(1, { message: "Provider Account ID is required" }),
+  user: z.object({
+    name: z.string().min(1, { message: "Name is Required" }),
+    username: z
+      .string()
+      .min(3, { message: "Username must be at least 3 characters long" }),
+    email: z.string().email("Please provide a valid email address"),
+    image: z.string().url("Invalid image url").optional(),
+  }),
 });
