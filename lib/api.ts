@@ -37,7 +37,7 @@ export const api = {
     },  
     
     //ALl Account Related API calls
-      accounts:{
+    accounts:{
         getAll:()=>fetchHandler(`${API_BASE_URL}/accounts`),
         // get user by id
         getById:(id:string)=>fetchHandler(`${API_BASE_URL}/accounts/${id}`),
@@ -64,7 +64,7 @@ export const api = {
 
     },
     // oauth related API calls
-    Auth:{
+    auth:{
         oAuthSignIn:({user,provider,providerAccountId}:SigninWithOAuthParams)=>{
             return fetchHandler(`${API_BASE_URL}/auth/signin-with-oauth`,{
                 method:"POST",
