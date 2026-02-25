@@ -5,11 +5,11 @@ import dbConnect from "@/lib/mongodb";
 import { SignInWithOAuthSchema } from "@/lib/validations";
 import { APIErrorResponse } from "@/types/global";
 import mongoose from "mongoose";
+import { NextResponse } from "next/server";
 import slugify from "slugify";
 
 // Here Login with Github and Google is handled
 export async function POST(request: Request) {
-
   const { provider, providerAccountId, user } = await request.json();
 
   await dbConnect();
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
     let existingUser = await User.findOne({ email }).session(session);
 
     if (!existingUser) {
-       [existingUser] = await User.create(
+      [existingUser] = await User.create(
         [
           {
             name,
@@ -61,11 +61,7 @@ export async function POST(request: Request) {
         ],
         { session },
       );
-
-
     } else {
-
-
       const updatedData: { name?: string; image?: string } = {};
 
       if (existingUser.name !== name) {
@@ -89,15 +85,22 @@ export async function POST(request: Request) {
       providerAccountId,
     }).session(session);
 
-    if(!existingAccount){
-        await Account.create([
-            {userId:existingUser._id, name,image,providerAccountId}
-        ])
-    };
+    if (!existingAccount) {
+      await Account.create([
+        { userId: existingUser._id,
+           name, 
+           image, 
+             provider,          // ✅ Add this
+           providerAccountId 
+        },
+      ],{session});
+    }
 
     await session.commitTransaction();
 
-     
+    return NextResponse.json({
+      success: true,
+    });
   } catch (error) {
     await session.abortTransaction();
     return handleError(error, "api") as APIErrorResponse;
