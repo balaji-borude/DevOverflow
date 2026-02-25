@@ -83,9 +83,8 @@ interface SearchParams{
 
 const Home = async ({searchParams}:SearchParams) => {
  
-   await test();
-  //  console.log("result", result); 
-
+  const session = await auth();
+  console.log("session:",session);
   // searchparams madhun query ghene ani 
   const {query=""} = await searchParams;
 
@@ -99,8 +98,8 @@ const Home = async ({searchParams}:SearchParams) => {
       // warchaya questions chya array madhun apan question filter krt ahe 
 
 
-  const session = await auth();
-  console.log("Looged in user session --> ", session);
+  // const session = await auth();
+  // console.log("Looged in user session --> ", session);
 
   // const LogoutHandler= async()=>{
   //     'use server'
