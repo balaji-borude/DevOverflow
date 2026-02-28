@@ -4,9 +4,40 @@ import Google from "next-auth/providers/google";
 import { ActionResponse } from "./types/global";
 import { api } from "./lib/api";
 import { IAccountDoc } from "./database/accout.model";
-
+import { SignInSchema } from "./lib/validations";
+import bcrypt from "bcryptjs";
+import Credentials from "next-auth/providers/credentials";
+ 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [GitHub, Google],
+  providers: [GitHub, Google, Credentials({
+    async authorize(credentials, request) {
+      const validatedField = SignInSchema.safeParse(credentials);
+
+      if(validatedField.success){
+        const {email,password} = validatedField.data;
+
+        const {data:existingAccount } = await api.accounts.getByProvider(email) as ActionResponse<IAccountDoc>;
+
+        if(!existingAccount) return null;
+
+        const {data:existingUser} = await api.users.getById(existingAccount.userId.toString()) as ActionResponse<IAccountDoc>;
+        
+        if(!existingUser) return null;
+
+        const isValidPassword = await bcrypt.compare(password,existingAccount.password!);
+
+        if(isValidPassword) {
+          return {
+            id:existingUser.userId.toString(),
+            name:existingUser.name,
+            email:existingUser.email,
+            image:existingUser.image,
+          }
+        }
+      }
+      return null;
+    }
+  })],
   callbacks: {
     async signIn({ user, account, profile }) {
       // Here you can handle the sign-in logic, such as checking if the user exists in your database or creating a new user record.
@@ -69,6 +100,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return token;
     },
+
   
 
     

@@ -60,7 +60,7 @@ const AuthForm = <T extends FieldValues>({
 
   // form handler
   const handleSubmit: SubmitHandler<T> = async (data) => {
-    const result = await onSubmit(data);
+    const result = await onSubmit(data) as ActionResponse;
 
     if (result?.success) {
       toast.success(
@@ -70,8 +70,9 @@ const AuthForm = <T extends FieldValues>({
       );
 
       router.replace(ROUTES.HOME);
+
     } else {
-      toast.error(result?.error?.message ?? "Something went wrong");
+      toast.error(result?.error?.message ?? "Something wenqt wrong");
     }
   };
 

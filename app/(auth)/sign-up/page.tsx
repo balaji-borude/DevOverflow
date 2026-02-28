@@ -1,9 +1,9 @@
 "use client";
 import AuthForms from '@/components/forms/AuthForms';
+import { signUpWithCredentials } from '@/lib/actions/auth.action';
 
 import { SignUpSchema } from '@/lib/validations';
-import React from 'react'
-
+ 
 const SignUp = () => {
   return (
     <div>SignUp
@@ -11,9 +11,8 @@ const SignUp = () => {
         formType="SIGN_UP"
         Schema={SignUpSchema}
         defaultValues={{ email: "", password: "",name:"",username:"" }}
-        onSubmit={(data) => 
-          Promise.resolve({ success: true })
-        }
+        onSubmit={signUpWithCredentials}
+        
       />
       
     </div>
