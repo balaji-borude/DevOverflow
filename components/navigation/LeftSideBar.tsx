@@ -1,4 +1,3 @@
-import React from "react";
 import NavLinks from "./navbar/NavLinks";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
