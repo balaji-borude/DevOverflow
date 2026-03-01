@@ -112,11 +112,11 @@ export async function signInWithCredentials(
     );
     if (!isPasswordValid) throw new Error("Password is incorrect ");
 
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    // await signIn("credentials", {
+    //   email,
+    //   password,
+    //   redirect: false,
+    // });
     return { success: true };
   } catch (error) {
     return handleError(error) as ErrorResponse;
