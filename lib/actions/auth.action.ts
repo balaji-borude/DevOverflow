@@ -8,6 +8,7 @@ import User from "@/database/user.model";
 import bcrypt from "bcryptjs";
 import Account from "@/database/accout.model";
 import { signIn } from "@/auth";  
+
 import { NotFoundError } from "../http-errors";
 
 // SignUp with credential
@@ -112,11 +113,11 @@ export async function signInWithCredentials(
     );
     if (!isPasswordValid) throw new Error("Password is incorrect ");
 
-    // await signIn("credentials", {
-    //   email,
-    //   password,
-    //   redirect: false,
-    // });
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
     return { success: true };
   } catch (error) {
     return handleError(error) as ErrorResponse;

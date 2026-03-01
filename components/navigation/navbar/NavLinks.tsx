@@ -1,7 +1,7 @@
 "use client";
 
 // import the links from constant
-import { sidebarLinks } from "@/constants/NavLinks";
+import { sidebarLinks } from "@/constants/NavLinks";  // Sidebar Links 
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";

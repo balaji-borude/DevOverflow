@@ -7,7 +7,6 @@ import { IAccountDoc } from "./database/accout.model";
 import { SignInSchema } from "./lib/validations";
 import bcrypt from "bcryptjs";
 import Credentials from "next-auth/providers/credentials";
-import Account from "./database/accout.model";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
