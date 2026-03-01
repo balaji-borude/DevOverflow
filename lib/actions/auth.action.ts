@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import User from "@/database/user.model";
 import bcrypt from "bcryptjs";
 import Account from "@/database/accout.model";
-import { signIn } from "next-auth/react";
+import { signIn } from "@/auth";  
 import { NotFoundError } from "../http-errors";
 
 // SignUp with credential
@@ -65,11 +65,11 @@ export async function signUpWithCredentials(
 
     await session.commitTransaction();
 
-    // await signIn("credentials", {
-    //   email,
-    //   password,
-    //   redirect: false,
-    // });
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
 
     return { success: true };
   } catch (error) {

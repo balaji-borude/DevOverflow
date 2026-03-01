@@ -38,7 +38,7 @@ async function action<T>({
     if(authorize){
         session= await auth();
 
-        if(session){
+        if(!session){
             return new UnauthorizedError();
         }
     }

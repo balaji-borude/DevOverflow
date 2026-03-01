@@ -84,7 +84,7 @@ interface SearchParams{
 const Home = async ({searchParams}:SearchParams) => {
  
   const session = await auth();
-  console.log("session:",session);
+  // console.log("session:",session);
   // searchparams madhun query ghene ani 
   const {query=""} = await searchParams;
 

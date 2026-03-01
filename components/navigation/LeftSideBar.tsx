@@ -4,8 +4,15 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/route";
 import Image from "next/image";
+import { auth, signOut } from "@/auth";
+import { LogOut } from "lucide-react";
 
-const LeftSideBar = () => {
+const LeftSideBar = async() => {
+  const session = await auth(); 
+  const userId = session?.user?.id;
+
+
+  console.log("Pringting the UserId afte Loginn -->",userId);
   return (
     <section className="custom-scrollbar background-light900_dark200 light-border sticky left-0 top-0 h-screen flex flex-col justify-between  border-r p-6 pt-24 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px] ">
 
@@ -14,7 +21,24 @@ const LeftSideBar = () => {
       </div>
 
       <div className="flex flex-col space-y-4">
-        <Link href={ROUTES.SIGN_IN}>
+
+        {
+          userId ? (
+            <form action={async ()=>{
+              "use server";
+              await signOut(); 
+            }}>
+              <Button type="submit"
+                className="base-medium w-fit bg-transparent px-4 py-3 "
+              >
+               <LogOut className="size-5 text-black dark:text-white "/> <span className="max-lg:hidden text-dark300_light900">
+                Logout
+               </span>
+              </Button>
+            </form>
+          ): (
+            <>
+                    <Link href={ROUTES.SIGN_IN}>
           <Button
             asChild
             className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3"
@@ -46,6 +70,10 @@ const LeftSideBar = () => {
             <span className="max-lg:hidden">Sign Up</span>
           </Button>
         </Link>
+            </>
+          )
+        }
+
       </div>
     </section>
   );
