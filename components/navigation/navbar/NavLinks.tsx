@@ -10,12 +10,12 @@ import { cn } from "@/lib/utils";
 import { SheetClose } from "@/components/ui/sheet";
 
 
-const NavLinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
+const NavLinks = ({ isMobileNav = false,userId }: { isMobileNav?: boolean,userId?: string }) => {
   // for getting path from the URl of Browser
   const pathname = usePathname();
 
   // for the Profile section temporary setting the id
-  const userId = 1;
+
 
   return (
     <>

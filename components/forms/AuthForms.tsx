@@ -118,7 +118,7 @@ const AuthForm = <T extends FieldValues>({
 
         <Button
           disabled={form.formState.isSubmitting}
-          className="primary-gradient paragraph-medium rounded-2 font-inter text-light-900! min-h-12 w-full px-4 py-3"
+          className="primary-gradient paragraph-medium rounded-2 font-inter text-light-900! min-h-12 w-full px-4 py-3 hover:cursor-pointer"
         >
           {form.formState.isSubmitting
             ? buttonText === "Sign In"
@@ -129,7 +129,7 @@ const AuthForm = <T extends FieldValues>({
       </form>
 
       {formType === "SIGN_IN" ? (
-        <p className="paragraph-regular text-dark400_light700 mt-6 text-center">
+        <p className="paragraph-regular text-dark400_light700 mt-6 text-center ">
           Don’t have an account?{" "}
           <Link
             href={ROUTES.SIGN_UP}
@@ -143,7 +143,7 @@ const AuthForm = <T extends FieldValues>({
           Already have an account?{" "}
           <Link
             href={ROUTES.SIGN_IN}
-            className="paragraph-semibold primary-text-gradient"
+            className="paragraph-semibold primary-text-gradient hover:cursor-pointer"
           >
             Sign in
           </Link>

@@ -2,8 +2,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { ThemeToggler } from "./ThemeToggler";
 import MobileNavigation from "./MobileNavigation";
+import { auth } from "@/auth";
+import UserAvatar from "@/components/UserAvatar";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const session = await auth();
+
+  const userId = session?.user?.id;
+
   return (
     <nav className="  w-full flex-between background-light900_dark200 fixed z-50 gap-5 p-6 shadow-light-300 dark:shadow-none sm:px-12">
       {/* Logo */}
@@ -24,7 +30,6 @@ const Navbar = () => {
 
       {/* searchbar  */}
       <div className="w-[100px] sm:w-[300px]   flex justify-center ">
-   
         <input
           type="text"
           placeholder="Search..."
@@ -42,7 +47,16 @@ const Navbar = () => {
 
       <div className="flex gap-x-2">
         <ThemeToggler />
-        {/*mobile Navbar   */}
+
+        {/*User Avatar --> Profile Picture   */}
+        {session?.user?.id && (
+          <UserAvatar
+            id={session.user.id}
+            name={session.user?.name || undefined}
+            image={session.user?.image || undefined}
+            className="h-9 w-9 rounded-full"
+          />
+        )}
         <MobileNavigation />
       </div>
 
