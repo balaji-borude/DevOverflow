@@ -14,39 +14,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     GitHub,
     Google,
     Credentials({
-async authorize(credentials) {
-  try {
-    const validatedField = SignInSchema.safeParse(credentials);
-    console.log("PROD 1 →", validatedField.success);
+      async authorize(credentials, request) {
+        const validatedField = SignInSchema.safeParse(credentials);
 
-    if (validatedField.success) {
-      const { email, password } = validatedField.data;
+        if (validatedField.success) {
+          // data validate kela
+          const { email, password } = validatedField.data;
 
-      const accountRes = await api.accounts.getByProvider(email) as ActionResponse<IAccountDoc>;
-      console.log("PROD 2 →", JSON.stringify(accountRes));
+          const { data: existingAccount } = (await api.accounts.getByProvider(
+            email,
+          )) as ActionResponse<IAccountDoc>;
 
-      if (!accountRes.data) return null;
+          if (!existingAccount) return null;
 
-      const userRes = await api.users.getById(accountRes.data.userId.toString()) as ActionResponse<any>;
-      console.log("PROD 3 →", JSON.stringify(userRes));
+          const { data: existingUser } = (await api.users.getById(
+            existingAccount.userId.toString(),
+          )) as ActionResponse<IAccountDoc>;
 
-      if (!userRes.data) return null;
+          if (!existingUser) return null;
 
-      const isValid = await bcrypt.compare(password, accountRes.data.password!);
-      console.log("PROD 4 →", isValid);
+          const isValidPassword = await bcrypt.compare(
+            password,
+            existingAccount.password!,
+          );
 
-      if (isValid) return {
-        id: accountRes.data.userId.toString(),
-        name: userRes.data.name,
-        email: userRes.data.email,
-        image: userRes.data.image,
-      };
-    }
-  } catch(e) {
-    console.error("PROD ERROR →", e); // 👈 real error shows here
-  }
-  return null;
-}
+          if (isValidPassword) {
+            return {
+              id: existingAccount.userId.toString(),
+              name: existingUser.name,
+              email: existingUser.email,
+              image: existingUser.image,
+            };
+          }
+        }
+        return null;
+      },
     }),
   ],
   callbacks: {

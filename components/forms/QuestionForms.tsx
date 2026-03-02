@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
-
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -20,8 +20,15 @@ import { Button } from "../ui/button";
 
 import Editor from "../editor";
 import { useState } from "react";
+import { createQuestion } from "@/lib/actions/question.action";
+import { useRouter } from "next/navigation";
+import ROUTES from "@/constants/route";
 
 const QuestionForms = () => {
+
+  const router = useRouter();
+
+
   const [tagInput, setTagInput] = useState("");
 
   // form validation import from ./validations.ts file
@@ -94,8 +101,18 @@ const QuestionForms = () => {
     tags: string[];
   }
   // handle create question function
-  const handleCreateQuestion = (data: Props) => {
-    console.log(data);
+  const handleCreateQuestion = async(data: Props) => {
+    const result = await createQuestion(data);
+
+    if(result.success){
+      toast.success("Question created successfully");
+      form.reset();
+      if(result.data) router.push(ROUTES.QUESTION(result?.data?._id)); // Redirect tp question details page
+
+
+    }else{
+      toast.error(result?.error?.message || "Failed to create question");
+    }
   };
 
   return (
