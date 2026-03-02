@@ -9,45 +9,44 @@ import bcrypt from "bcryptjs";
 import Credentials from "next-auth/providers/credentials";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+   trustHost: true, // ✅ Keep this as true — required for Vercel deployment
   providers: [
     GitHub,
     Google,
     Credentials({
-      async authorize(credentials, request) {
-        const validatedField = SignInSchema.safeParse(credentials);
+async authorize(credentials) {
+  try {
+    const validatedField = SignInSchema.safeParse(credentials);
+    console.log("PROD 1 →", validatedField.success);
 
-        if (validatedField.success) {
-          // data validate kela
-          const { email, password } = validatedField.data;
+    if (validatedField.success) {
+      const { email, password } = validatedField.data;
 
-          const { data: existingAccount } = (await api.accounts.getByProvider(
-            email,
-          )) as ActionResponse<IAccountDoc>;
+      const accountRes = await api.accounts.getByProvider(email) as ActionResponse<IAccountDoc>;
+      console.log("PROD 2 →", JSON.stringify(accountRes));
 
-          if (!existingAccount) return null;
+      if (!accountRes.data) return null;
 
-          const { data: existingUser } = (await api.users.getById(
-            existingAccount.userId.toString(),
-          )) as ActionResponse<IAccountDoc>;
+      const userRes = await api.users.getById(accountRes.data.userId.toString()) as ActionResponse<any>;
+      console.log("PROD 3 →", JSON.stringify(userRes));
 
-          if (!existingUser) return null;
+      if (!userRes.data) return null;
 
-          const isValidPassword = await bcrypt.compare(
-            password,
-            existingAccount.password!,
-          );
+      const isValid = await bcrypt.compare(password, accountRes.data.password!);
+      console.log("PROD 4 →", isValid);
 
-          if (isValidPassword) {
-            return {
-              id: existingAccount.userId.toString(),
-              name: existingUser.name,
-              email: existingUser.email,
-              image: existingUser.image,
-            };
-          }
-        }
-        return null;
-      },
+      if (isValid) return {
+        id: accountRes.data.userId.toString(),
+        name: userRes.data.name,
+        email: userRes.data.email,
+        image: userRes.data.image,
+      };
+    }
+  } catch(e) {
+    console.error("PROD ERROR →", e); // 👈 real error shows here
+  }
+  return null;
+}
     }),
   ],
   callbacks: {
@@ -97,11 +96,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     //jwt
     async jwt({ token, account }) {
-      console.log("JWT callback ----→", {
-        accountType: account?.type,
-        tokenSub: token.sub,
-        tokenEmail: token.email,
-      });
+      // console.log("JWT callback ----→", {
+      //   accountType: account?.type,
+      //   tokenSub: token.sub,
+      //   tokenEmail: token.email,
+      // });
       
       if (account) {
         const { data: existingAccount, success } =

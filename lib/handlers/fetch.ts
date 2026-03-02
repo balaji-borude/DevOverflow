@@ -58,7 +58,6 @@ export async function fetchHandler<T>(
 
         if (!response.ok) {
             throw new RequestError(response.status,`HTTP error: ${response.status}`);
-         
         };
 
         return await response.json();

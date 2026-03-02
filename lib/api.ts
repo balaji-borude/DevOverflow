@@ -5,8 +5,11 @@ import { fetchHandler } from "./handlers/fetch";
 import { IUser } from "@/database/user.model";
 
 // Base URL for the API
-//const API_BASE_URL = "process.env.API_BASE_URL || 'http://localhost:3000/api'";
-const API_BASE_URL = "http://localhost:3000/api";
+const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/api';
+
+//console.log("Printing the Base Url -->", API_BASE_URL);
+//https://dev-overflow-seven.vercel.app/api
+// const API_BASE_URL = "http://localhost:3000/api";
 
 export const api = {
   //ALL User Related API calls

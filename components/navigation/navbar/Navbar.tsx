@@ -49,9 +49,9 @@ const Navbar = async () => {
         <ThemeToggler />
 
         {/*User Avatar --> Profile Picture   */}
-        {session?.user?.id && (
+        {userId && (
           <UserAvatar
-            id={session.user.id}
+            id={userId}
             name={session.user?.name || undefined}
             image={session.user?.image || undefined}
             className="h-9 w-9 rounded-full"
