@@ -48,6 +48,7 @@ export const SignUpSchema = z.object({
     }),
 });
 
+// Create Question Schema Validation 
 export const AskQuestionSchema = z.object({
   title: z
     .string()
@@ -64,6 +65,15 @@ export const AskQuestionSchema = z.object({
     .min(1, { message: "Please provide at least one tag" })
     .max(3, { message: "Can Not add more than 3 tags" }),
 });
+
+// edit question schema
+export const EditQuestionSchema = AskQuestionSchema.extend({
+  questionId:z.string().min(1,{message:"QuestionId is Required"})
+});
+
+export const GetQuestionSchema = z.object({
+  questionId:z.string().min(1,{message:"Question Id is required "})
+})
 
 // Frontend validation for the users
 export const UserSchema = z.object({

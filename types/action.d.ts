@@ -32,3 +32,14 @@ interface RouteParams{
 
 // params: /question/:id => yat actual value of id jt ghene asel tr use hote 
 //searchParams: /question/:id ? tag=react => yat Question mark nanter che value ghenasathi use hote te Key : value  pair mahde aste 
+
+// edit question --> extend with the CreateQuestionParams  
+ interface EditQuestionParams extends CreateQuestionParams{
+    questionId:string;
+ };
+
+
+ // get question 
+ interface GetQuestionParams{
+    questionId:string;
+ }
