@@ -1,5 +1,7 @@
 "use client";
 
+// This componets is for Edit and Create the Question,
+
 import { AskQuestionSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
@@ -18,18 +20,26 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-import Editor from "../editor";
+// import Editor from "../editor";
+// ✅ Add this dynamic import
+import dynamic from "next/dynamic";
+
 import { useState } from "react";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/route";
+import { Questions } from "@/types/global";
 
-const QuestionForms = () => {
-
+interface Params {
+  question?: Questions;
+  isEdit?: boolean;
+}
+const QuestionForms = ({ question, isEdit = false }: Params) => {
   const router = useRouter();
 
-
   const [tagInput, setTagInput] = useState("");
+
+  const Editor = dynamic(() => import("../editor"), { ssr: false });
 
   // form validation import from ./validations.ts file
   const form = useForm<{
@@ -39,10 +49,16 @@ const QuestionForms = () => {
   }>({
     resolver: zodResolver(AskQuestionSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      tags: [],
+      title: question?.title || "",
+      content: question?.content || "",
+      tags: question?.tags.map((tag) => tag.name) || [],
     },
+    // ✅ Fix - deduplicate with Set
+// defaultValues: {
+//   title: question?.title || "",
+//   content: question?.content || "",
+//   tags: [...new Set(question?.tags.map((tag) => tag.name) || [])],
+// },
   });
 
   // tags
@@ -101,17 +117,24 @@ const QuestionForms = () => {
     tags: string[];
   }
   // handle create question function
-  const handleCreateQuestion = async(data: Props) => {
-    const result = await createQuestion(data);
-
-    if(result.success){
-      toast.success("Question created successfully");
-      form.reset();
-      if(result.data) router.push(ROUTES.QUESTION(result?.data?._id)); // Redirect tp question details page
-
-
-    }else{
-      toast.error(result?.error?.message || "Failed to create question");
+  // ✅ Fix - use if/else
+  const handleCreateQuestion = async (data: Props) => {
+    if (isEdit && question) {
+      const result = await editQuestion({ questionId: question._id, ...data });
+      if (result.success) {
+        toast.success("Question updated successfully");
+        if (result.data) router.push(ROUTES.QUESTION(result.data._id));
+      } else {
+        toast.error(result?.error?.message || "Failed to update question");
+      }
+    } else {
+      const result = await createQuestion(data);
+      if (result.success) {
+        toast.success("Question created successfully");
+        if (result.data) router.push(ROUTES.QUESTION(result.data._id));
+      } else {
+        toast.error(result?.error?.message || "Failed to create question");
+      }
     }
   };
 
@@ -133,7 +156,6 @@ const QuestionForms = () => {
 
               <FormControl>
                 <Input
-               
                   {...field}
                   placeholder={`Enter your ${field.name}`}
                   className="paragraph-regular background-light700_dark300 light-border-2 text-dark300_light700 no-focus min-h-14 border"
@@ -234,8 +256,8 @@ const QuestionForms = () => {
 
         {/* button */}
         <div className="mt-16 flex justify-end">
-          <Button className="primary-gradient w-fit text-light-900">
-            Ask A Question
+          <Button className="primary-gradient w-fit text-light-900  hover:cursor-pointer">
+            {isEdit ? "Edit" : " Ask A Question"}
           </Button>
         </div>
       </form>

@@ -1,7 +1,7 @@
 "use client";
 
 // import the links from constant
-import { sidebarLinks } from "@/constants/NavLinks";  // Sidebar Links 
+import { sidebarLinks } from "@/constants/NavLinks"; // Sidebar Links
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -9,17 +9,31 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { SheetClose } from "@/components/ui/sheet";
 
-
-const NavLinks = ({ isMobileNav = false,userId }: { isMobileNav?: boolean,userId?: string }) => {
+const NavLinks = ({
+  isMobileNav = false,
+  userId,
+}: {
+  isMobileNav?: boolean;
+  userId?: string;
+}) => {
   // for getting path from the URl of Browser
   const pathname = usePathname();
 
   // for the Profile section temporary setting the id
 
-
   return (
     <>
       {sidebarLinks.map((item) => {
+        // ✅ Use a local variable, never mutate the original
+        const route =
+          item.route === "/profile"
+            ? userId
+              ? `/profile/${userId}`
+              : null
+            : item.route;
+         // if no userId and profile route, skip
+        if (!route) return null;
+
         // checking which link is active here
         const isActive =
           (pathname.includes(item.route) && item.route.length > 1) ||
@@ -41,7 +55,7 @@ const NavLinks = ({ isMobileNav = false,userId }: { isMobileNav?: boolean,userId
               isActive
                 ? "primary-gradient rounded-lg text-light-900 "
                 : "text-dark300_light900 ",
-              "flex items-center justify-start gap-4 bg-transparent p-3 "
+              "flex items-center justify-start gap-4 bg-transparent p-3 ",
             )}
           >
             <Image
@@ -54,7 +68,7 @@ const NavLinks = ({ isMobileNav = false,userId }: { isMobileNav?: boolean,userId
             <p
               className={cn(
                 isActive ? "base-bold" : "base-medium",
-                !isMobileNav && "max-lg:hidden"
+                !isMobileNav && "max-lg:hidden",
               )}
             >
               {item.label}

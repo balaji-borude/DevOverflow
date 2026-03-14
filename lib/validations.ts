@@ -71,6 +71,7 @@ export const EditQuestionSchema = AskQuestionSchema.extend({
   questionId:z.string().min(1,{message:"QuestionId is Required"})
 });
 
+// get question schema 
 export const GetQuestionSchema = z.object({
   questionId:z.string().min(1,{message:"Question Id is required "})
 })

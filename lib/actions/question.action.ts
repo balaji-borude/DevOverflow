@@ -9,7 +9,7 @@ import {
   GetQuestionSchema,
 } from "../validations";
 import handleError from "../handlers/errors";
-import Tag, {  ITagDoc } from "@/database/tag.model";
+import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
 
 import Question from "@/database/question.model";
@@ -92,7 +92,7 @@ export async function createQuestion(
   } finally {
     session.endSession();
   }
-}
+};
 
 // edit question
 export async function editQuestion(
@@ -206,9 +206,9 @@ export async function editQuestion(
   } finally {
     await session.endSession();
   }
-}
+};
 
-// Get question -- all server action become a Post request --> here we fetching the question but 
+// Get question -- all server action become a Post request --> here we fetching the question but
 export async function getQuestion(
   params: GetQuestionParams & { questionId: string },
 ): Promise<ActionResponse<Questions>> {
@@ -235,4 +235,4 @@ export async function getQuestion(
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-}
+};
