@@ -56,7 +56,7 @@ export async function createQuestion(
         },
         {
           $setOnInsert: { name: tag },
-          $inc: { question: 1 },
+          $inc: { questions: 1 },
         },
         { upsert: true, new: true, session },
       );
@@ -92,7 +92,7 @@ export async function createQuestion(
   } finally {
     session.endSession();
   }
-};
+}
 
 // edit question
 export async function editQuestion(
@@ -109,68 +109,68 @@ export async function editQuestion(
   }
 
   const { title, content, tags, questionId } = validationResult.params!;
-
   const userId = validationResult?.session?.user?.id;
 
-  // use mongoose trancsation to create question
   const session = await mongoose.startSession();
-
   session.startTransaction();
+
   try {
-    const question = await Question.findById(questionId).populate("tags");
+    //const question = await Question.findById(questionId).populate("tags");
+    const question = await Question.findById(questionId)
+  .populate("tags")
+  .session(session);
 
-    if (!question) {
-      throw new Error("Question Not Found");
-    }
+    if (!question) throw new Error("Question Not Found");
+    if (question.author.toString() !== userId) throw new Error("Unauthorized");
 
-    if (question.author.toString() !== userId) {
-      throw new Error("Unauthorized");
-    }
-
-    // this is update when the title and content are Updated
     if (question.title !== title || question.content !== content) {
       question.title = title;
       question.content = content;
       await question.save({ session });
     }
-    //tags --? means this tag is not present in the original tag array
+
+    // ✅ Bug 4 Fixed — compare tag names properly
+    const existingTagNames = question.tags.map((t: ITagDoc) =>
+      t.name.toLowerCase(),
+    );
+
     const tagsToAdd = tags.filter(
-      (tag) => !question.tags.includes(tag.toLocaleLowerCase()),
+      (tag) => !existingTagNames.includes(tag.toLowerCase()),
     );
 
     const tagToRemove = question.tags.filter(
-      (tag: ITagDoc) => !tags.includes(tag.name.toLowerCase()),
+      (tag: ITagDoc) =>
+        !tags.map((t) => t.toLowerCase()).includes(tag.name.toLowerCase()),
     );
 
     const newTagDocuments = [];
 
+    // ✅ Bug 3 Fixed — iterate tagsToAdd, not tags
     if (tagsToAdd.length > 0) {
-      for (const tag of tags) {
+      for (const tag of tagsToAdd) {
         const existingTag = await Tag.findOneAndUpdate(
-          {
-            name: { $regex: new RegExp(`^${tag}$`, "i") },
-          },
+          { name: { $regex: new RegExp(`^${tag}$`, "i") } },
           {
             $setOnInsert: { name: tag },
-            $inc: { question: 1 },
+            $inc: { questions: 1 }, // ✅ Bug 1 Fixed — correct field name
           },
           { upsert: true, new: true, session },
         );
 
         if (existingTag) {
-          // add new Tag
           newTagDocuments.push({
             tag: existingTag._id,
             question: question._id,
           });
-
-          question.tags.push(existingTag._id);
+          // question.tags.push(existingTag._id);
+          //  // Fix — push the full document instead
+          question.tags.push(existingTag);
         }
       }
     }
 
-    // remove tags --- previsiously added (which one should we remove ?)
-    if (tagsToAdd.length > 0) {
+    // ✅ Bug 2 Fixed — check tagToRemove.length, not tagsToAdd.length
+    if (tagToRemove.length > 0) {
       const tagIdsToRemove = tagToRemove.map((tag: ITagDoc) => tag._id);
 
       await Tag.updateMany(
@@ -184,9 +184,14 @@ export async function editQuestion(
         { session },
       );
 
+      // question.tags = question.tags.filter(
+      //   (tagId: mongoose.Types.ObjectId) =>
+      //     !tagIdsToRemove.some((id) => id.equals(tagId))
+      // );
       question.tags = question.tags.filter(
-        (tagId: mongoose.Types.ObjectId) => !tagToRemove.includes(tagId),
+        (tag: ITagDoc) => !tagIdsToRemove.some((id) => id.equals(tag._id)),
       );
+
     }
 
     if (newTagDocuments.length > 0) {
@@ -196,19 +201,15 @@ export async function editQuestion(
     await question.save({ session });
     await session.commitTransaction();
 
-    return {
-      success: true,
-      data: JSON.parse(JSON.stringify(question)),
-    };
+    return { success: true, data: JSON.parse(JSON.stringify(question)) };
   } catch (error) {
     await session.abortTransaction();
     return handleError(error) as ErrorResponse;
   } finally {
     await session.endSession();
   }
-};
-
-// Get question -- all server action become a Post request --> here we fetching the question but
+}
+// Get question -- all server action become a -->  Post request --> here we fetching the question but
 export async function getQuestion(
   params: GetQuestionParams & { questionId: string },
 ): Promise<ActionResponse<Questions>> {
@@ -235,4 +236,4 @@ export async function getQuestion(
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-};
+}

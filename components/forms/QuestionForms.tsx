@@ -48,17 +48,17 @@ const QuestionForms = ({ question, isEdit = false }: Params) => {
     tags: string[];
   }>({
     resolver: zodResolver(AskQuestionSchema),
-    defaultValues: {
-      title: question?.title || "",
-      content: question?.content || "",
-      tags: question?.tags.map((tag) => tag.name) || [],
-    },
+    // defaultValues: {
+    //   title: question?.title || "",
+    //   content: question?.content || "",
+    //   tags: question?.tags.map((tag) => tag.name) || [],
+    // },
     // ✅ Fix - deduplicate with Set
-// defaultValues: {
-//   title: question?.title || "",
-//   content: question?.content || "",
-//   tags: [...new Set(question?.tags.map((tag) => tag.name) || [])],
-// },
+defaultValues: {
+  title: question?.title || "",
+  content: question?.content || "",
+  tags: [...new Set(question?.tags.map((tag) => tag.name) || [])],
+},
   });
 
   // tags
