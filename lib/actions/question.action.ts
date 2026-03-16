@@ -1,18 +1,26 @@
 "use server";
 
-import { ActionResponse, ErrorResponse, Questions } from "@/types/global";
+import {
+  ActionResponse,
+  ErrorResponse,
+  PaginatedSearchParams,
+  Questions,
+} from "@/types/global";
+// import mongoose from "mongoose";
 import mongoose from "mongoose";
-import action from "../handlers/action";
+import action from "../handlers/action"; //this is the server action handler used in all the server actions
 import {
   AskQuestionSchema,
   EditQuestionSchema,
   GetQuestionSchema,
+  PaginatedSearchParamsSchema,
 } from "../validations";
 import handleError from "../handlers/errors";
 import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
 
-import Question from "@/database/question.model";
+import Question, { type IQuestion } from "@/database/question.model";
+
 
 // create question
 export async function createQuestion(
@@ -117,8 +125,8 @@ export async function editQuestion(
   try {
     //const question = await Question.findById(questionId).populate("tags");
     const question = await Question.findById(questionId)
-  .populate("tags")
-  .session(session);
+      .populate("tags")
+      .session(session);
 
     if (!question) throw new Error("Question Not Found");
     if (question.author.toString() !== userId) throw new Error("Unauthorized");
@@ -188,10 +196,15 @@ export async function editQuestion(
       //   (tagId: mongoose.Types.ObjectId) =>
       //     !tagIdsToRemove.some((id) => id.equals(tagId))
       // );
+      // question.tags = question.tags.filter(
+      //   (tag: ITagDoc) => !tagIdsToRemove.some((id) => id.equals(tag._id)),
+      // );
       question.tags = question.tags.filter(
-        (tag: ITagDoc) => !tagIdsToRemove.some((id) => id.equals(tag._id)),
+        (tag: ITagDoc) =>
+          !tagIdsToRemove.some((id: mongoose.Types.ObjectId) =>
+            id.equals(tag._id),
+          ),
       );
-
     }
 
     if (newTagDocuments.length > 0) {
@@ -236,4 +249,99 @@ export async function getQuestion(
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
+}
+
+// get ALL questions for the home page --> search bar and display all the questions -->
+export async function getQuestions(
+  params: PaginatedSearchParams,
+): Promise<
+  ActionResponse<{ questions: Questions[]; isNext: boolean;  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: PaginatedSearchParamsSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+  // continue logic...
+
+  const { page = 1, pageSize = 10, query, filter, sort } = params;
+
+  const skip = (Number(page) - 1) * Number(pageSize);
+
+  const limit = Number(pageSize);
+
+const filterQuery: Record<string, unknown> = {};
+  if(filter === 'recommended'){
+    return {success:true, data:{questions:[],isNext:false}}
+
+  }
+
+  if(query){
+    filterQuery.$or = [
+
+      filterQuery.title = {$regex: new RegExp(query,'i')},
+      filterQuery.content = {$regex: new RegExp(query,'i')},
+    ]
+
+  }
+  // ✅ Fix
+// if (query) {
+//   filterQuery.$or = [
+//     { title: { $regex: new RegExp(query, "i") } },
+//     { content: { $regex: new RegExp(query, "i") } },
+//   ];
+// }
+
+  let sortCriteria = {};
+
+  switch(filter){
+    case 'newest':
+      sortCriteria = {createdAt:-1}
+      break;
+    case 'unanswered':
+      filterQuery.answers = 0;
+      sortCriteria = {createdAt:-1}
+      break;
+    case 'popular':
+      sortCriteria = {upvotes:-1}
+      break;
+    default: // show newest one on top 
+      sortCriteria = {createdAt:-1}
+      break;
+  };
+
+  try {
+
+    // get total number of questions
+    const totalQuestions = await Question.countDocuments(filterQuery);
+
+    // get all the questions
+    const questions = await Question.find(filterQuery)
+    .populate('tags', 'name')
+    .populate('author', 'name image')
+    .lean() //convert mongoose document to json
+    .sort(sortCriteria)
+    .skip(skip)
+    .limit(limit);
+
+
+    const isNext = totalQuestions > skip + questions.length; 
+
+    return {
+      success: true,
+      data:{
+        questions:JSON.parse(JSON.stringify(questions)),
+        isNext,
+      }
+    }
+
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+
+
+
 }

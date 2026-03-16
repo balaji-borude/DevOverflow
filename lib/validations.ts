@@ -1,3 +1,4 @@
+import { filter } from "@mdxeditor/editor";
 import { z } from "zod";
 
 // signin Schema  of Form
@@ -141,3 +142,14 @@ export const SignInWithOAuthSchema = z.object({
     image: z.string().url("Invalid image url").optional(),
   }),
 });
+
+
+
+// validation for the search params on the home page (search bar and display all the questions)
+export const PaginatedSearchParamsSchema = z.object({
+  page:z.number().int().positive().default(1),
+  pageSize:z.number().int().positive().default(10),
+  query:z.string().optional(),
+  filter:z.string().optional(),
+  sort:z.string().optional(),
+})

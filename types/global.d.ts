@@ -47,3 +47,14 @@ type APIErrorResponse = NextResponse<ErrorResponse>;
 
 // Regular Api Response 
 type APIResponse<T = null> = NextResponse <SuccessResponse<T> | ErrorResponse>;
+
+
+// interface for the pagination search params (homepage for displaying all the questions );
+
+interface PaginatedSearchParams{
+  page?:number;
+  pageSize?:number;
+  query?:string;
+  filter?:string;
+  sort?:string;
+}

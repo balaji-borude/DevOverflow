@@ -8,7 +8,7 @@ export interface IQuestion {
     upvotes: number;
     downvotes: number;
     answers: number;
-    author: Types.ObjectId; // refereance tot the uses 
+    author: Types.ObjectId; // refereance to the uses 
 };
 
 const QuestionSchema = new Schema<IQuestion>({
