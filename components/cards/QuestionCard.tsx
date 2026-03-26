@@ -21,7 +21,7 @@ interface Props {
 }
 const QuestionCard = ({ question }: Props) => {
 
-   console.log("Get the questions --> ",question)
+  // console.log("Get the questions --> ",question)
   // desstruct the question part here
   const {
     _id,

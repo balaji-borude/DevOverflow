@@ -1,8 +1,10 @@
-// mongoDB Connection file 
-
+   
 import mongoose, { Mongoose } from "mongoose";
 import Logger from "./logger";
- 
+
+// IMP
+import '@/database'; // register the models --in /database/index.ts file all the models are registerd which help to preload the model on the server side --> which help to connect on every server action call  --> this is the best way to get rid of the model not found error   
+
 const MONGO_URL = process.env.MONGO_URL;
 
 if(!MONGO_URL){

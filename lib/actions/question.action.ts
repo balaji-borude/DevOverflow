@@ -106,7 +106,7 @@ export async function createQuestion(
 // edit question
 export async function editQuestion(
   params: CreateQuestionParams & { questionId: string },
-): Promise<ActionResponse<Questions>> {
+): Promise<ActionResponse<IQuestion>> { 
   const validationResult = await action({
     params,
     schema: EditQuestionSchema,
