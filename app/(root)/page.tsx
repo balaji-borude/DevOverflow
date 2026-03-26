@@ -4,10 +4,9 @@ import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/route";
-import handleError from "@/lib/handlers/errors";
 
-import dbConnect from "@/lib/mongodb";
 import Link from "next/link";
+import { getQuestions } from "@/lib/actions/question.action";
 
 // import { NotFoundError, ValidationError } from "@/lib/http-errors";
 // import handleError from "@/lib/handlers/errors";
@@ -37,7 +36,8 @@ const questions: QuestionProps[] = [
     author: {
       _id: "u1",
       name: "Balaji",
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSToP5rz4ky9W48e8f3kQ8gdA_b7fyyjP68Eg&s",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSToP5rz4ky9W48e8f3kQ8gdA_b7fyyjP68Eg&s",
     },
     createdAt: new Date("2024-12-01"),
     upvotes: 12,
@@ -51,13 +51,13 @@ const questions: QuestionProps[] = [
     tags: [
       { _id: "t3", name: "javascript" },
       { _id: "t4", name: "programming" },
-      
     ],
     author: {
       _id: "u2",
       name: "Aarav",
-      // have to set the DiceBear Api here for profile Picture 
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSToP5rz4ky9W48e8f3kQ8gdA_b7fyyjP68Eg&s",
+      // have to set the DiceBear Api here for profile Picture
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSToP5rz4ky9W48e8f3kQ8gdA_b7fyyjP68Eg&s",
     },
     createdAt: new Date("2024-12-05"),
     upvotes: 25,
@@ -66,37 +66,35 @@ const questions: QuestionProps[] = [
   },
 ];
 
-const test =async()=>{
-  try {
-    // throw new Error("test error");
-    // throw new NotFoundError ("test error");
-    // throw new ValidationError({name:["name is required"]});
-    await dbConnect();
-  } catch (error) {
-    return handleError(error);
-  }
+interface SearchParams {
+  searchParams: Promise<{ [key: string]: string }>;
 }
 
-interface SearchParams{
-  searchParams: Promise<{[key:string]:string}>;
-}
-
-const Home = async ({searchParams}:SearchParams) => {
- 
+const Home = async ({ searchParams }: SearchParams) => {
   const session = await auth();
   // console.log("session:",session);
-  // searchparams madhun query ghene ani 
-  const {query=""} = await searchParams;
+  // searchparams madhun query ghene ani
+  //const {query=""} = await searchParams;
 
-  // here api call for the Query that we wantot execute 
-  // const data = await axios.get(/getquestions/data);
- 
+  // GET ALL QUESTIONS =
+
+  const { page, pageSize, query, filter } = await searchParams;
+
+  const { success, data } = await getQuestions({
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+    query: query || "",
+    filter: filter || "newest",
+  });
+
+  // destructure the data
+  const { questions } = data || {}; // pass the empty object if data is doestn exist
+
   // but above we have questions array -- react and javascript so that we can apply filter by using the two array object of questions
 
-  const filteredQuestions = questions.filter((question)=>question.title.toLowerCase().includes(query?.toLocaleLowerCase()))
+  // const filteredQuestions = questions.filter((question)=>question.title.toLowerCase().includes(query?.toLocaleLowerCase()))
 
-      // warchaya questions chya array madhun apan question filter krt ahe 
-
+  // warchaya questions chya array madhun apan question filter krt ahe
 
   // const session = await auth();
   // console.log("Looged in user session --> ", session);
@@ -108,9 +106,9 @@ const Home = async ({searchParams}:SearchParams) => {
 
   return (
     <>
-      <h1 className=" text-red-400 text-[30px] font-bold leading-[42px] tracking-tighter text-center  ">
+      {/* <h1 className=" text-red-400 text-[30px] font-bold leading-[42px] tracking-tighter text-center  ">
         Website Under devlopment .....
-      </h1>
+      </h1> */}
       <div className="flex w-full flex-col-reverse sm:flex-row justify-between gap-4 sm:items-center">
         <h1 className="h1-bold text-dark100_light900"> All Questions </h1>
 
@@ -135,16 +133,27 @@ const Home = async ({searchParams}:SearchParams) => {
 
       {/* question card  */}
       <section className="mt-11">
-       
-        <HomeFilter/> 
-        <div className="mt-10 flex w-full flex-col gap-6">
-          {/* <p> Question card </p>
-           */}
+        <HomeFilter />
 
-          {filteredQuestions.map((question) => (
-            <QuestionCard key={question._id} question={question}/>
-          ))}
-        </div>
+        {success ? (
+          <div className="mt-10 flex w-full flex-col gap-6">
+            {/* <p> Question card </p> */}
+
+            {questions && questions.length > 0 ? (
+              questions.map((question) => (
+                <QuestionCard key={question._id} question={question} />
+              ))
+            ) : (
+              <div className="mt-10 w-full items-center justify-center">
+                <p className="text-dark400_light500">No Questions found</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="mt-10 w-full items-center justify-center">
+            <p>{ "failed to fetch questions"}</p>
+          </div>
+        )}
       </section>
     </>
   );

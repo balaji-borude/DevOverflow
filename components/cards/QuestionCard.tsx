@@ -1,17 +1,13 @@
 import ROUTES from "@/constants/route";
 import { getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
-import React from "react";
 import TagCards from "./TagCards";
 import Metrics from "../Metrics";
-import AuthLayout from "../../app/(auth)/layout";
-import { auth } from "@/auth";
-import { create } from "domain";
 
 interface QuestionProps {
   _id: string;
   title: string;
-  description: string;
+  description?: string;
   tags: { _id: string; name: string }[];
   author: { _id: string; name: string; image: string };
   createdAt: Date;
@@ -24,6 +20,8 @@ interface Props {
   question: QuestionProps;
 }
 const QuestionCard = ({ question }: Props) => {
+
+   console.log("Get the questions --> ",question)
   // desstruct the question part here
   const {
     _id,
@@ -54,6 +52,7 @@ const QuestionCard = ({ question }: Props) => {
           </Link>
         </div>
       </div>
+
       {/* Tags */}
       <div className="mt-3.5 flex w-full flex-wrap gap-2">
         {tags.map((tag) => (
@@ -62,10 +61,12 @@ const QuestionCard = ({ question }: Props) => {
         ))}
       </div>
 
-      {/* like share logo and other metricks */}
+      
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
+
+        {/* Author metricks */}
         <Metrics
-          imgUrl={author.image}
+          imgUrl={author?.image}
           alt={author.name}
           value={author.name}
           title={`. asked ${getTimeStamp(createdAt)}`}
@@ -74,6 +75,7 @@ const QuestionCard = ({ question }: Props) => {
           isAuthor
         />
 
+        {/* like share logo and other metricks */}
         <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start">
           <div></div>
           <Metrics

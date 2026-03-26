@@ -20,8 +20,9 @@ import Tag, { ITagDoc } from "@/database/tag.model";
 import TagQuestion from "@/database/tag-question.model";
 
 import Question, { type IQuestion } from "@/database/question.model";
+import User from "@/database/user.model";
 
-
+console.log("User model registered: -------->", User.modelName);
 // create question
 export async function createQuestion(
   params: CreateQuestionParams,
@@ -254,9 +255,7 @@ export async function getQuestion(
 // get ALL questions for the home page --> search bar and display all the questions -->
 export async function getQuestions(
   params: PaginatedSearchParams,
-): Promise<
-  ActionResponse<{ questions: Questions[]; isNext: boolean;  }>
-> {
+): Promise<ActionResponse<{ questions: Questions[]; isNext: boolean }>> {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -273,75 +272,74 @@ export async function getQuestions(
 
   const limit = Number(pageSize);
 
-const filterQuery: Record<string, unknown> = {};
-  if(filter === 'recommended'){
-    return {success:true, data:{questions:[],isNext:false}}
-
+  const filterQuery: Record<string, unknown> = {};
+  if (filter === "recommended") {
+    return { success: true, data: { questions: [], isNext: false } };
   }
 
-  if(query){
-    filterQuery.$or = [
-
-      filterQuery.title = {$regex: new RegExp(query,'i')},
-      filterQuery.content = {$regex: new RegExp(query,'i')},
-    ]
-
-  }
+  // if (query) {
+  //   filterQuery.$or = [
+  //     (filterQuery.title = { $regex: new RegExp(query, "i") }),
+  //     (filterQuery.content = { $regex: new RegExp(query, "i") }),
+  //   ];
+  // }
+  if (query) {
+  filterQuery.$or = [
+    { title: { $regex: new RegExp(query, "i") } },
+    { content: { $regex: new RegExp(query, "i") } },
+  ];
+}
   // ✅ Fix
-// if (query) {
-//   filterQuery.$or = [
-//     { title: { $regex: new RegExp(query, "i") } },
-//     { content: { $regex: new RegExp(query, "i") } },
-//   ];
-// }
+  // if (query) {
+  //   filterQuery.$or = [
+  //     { title: { $regex: new RegExp(query, "i") } },
+  //     { content: { $regex: new RegExp(query, "i") } },
+  //   ];
+  // }
 
   let sortCriteria = {};
 
-  switch(filter){
-    case 'newest':
-      sortCriteria = {createdAt:-1}
+  switch (filter) {
+    case "newest":
+      sortCriteria = { createdAt: -1 };
       break;
-    case 'unanswered':
+    case "unanswered":
       filterQuery.answers = 0;
-      sortCriteria = {createdAt:-1}
+      sortCriteria = { createdAt: -1 };
       break;
-    case 'popular':
-      sortCriteria = {upvotes:-1}
+    case "popular":
+      sortCriteria = { upvotes: -1 };
       break;
-    default: // show newest one on top 
-      sortCriteria = {createdAt:-1}
+    default: // show newest one on top
+      sortCriteria = { createdAt: -1 };
       break;
-  };
+  }
 
   try {
-
-    // get total number of questions
+    // get total number of questions --> to tell which one is the next question
     const totalQuestions = await Question.countDocuments(filterQuery);
 
     // get all the questions
     const questions = await Question.find(filterQuery)
-    .populate('tags', 'name')
-    .populate('author', 'name image')
-    .lean() //convert mongoose document to json
-    .sort(sortCriteria)
-    .skip(skip)
-    .limit(limit);
+      .populate("tags", "name")
+      .populate("author", "name image")
+      .lean() //convert mongoose document to json
+      .sort(sortCriteria)
+      .skip(skip)
+      .limit(limit);
 
-
-    const isNext = totalQuestions > skip + questions.length; 
+    const isNext = totalQuestions > skip + questions.length;
 
     return {
       success: true,
-      data:{
-        questions:JSON.parse(JSON.stringify(questions)),
+      data: {
+        questions: JSON.parse(JSON.stringify(questions)),
         isNext,
-      }
-    }
+      },
+    };
 
   } catch (error) {
+      console.error("getQuestions error:=======>", error);
     return handleError(error) as ErrorResponse;
   }
-
-
-
 }

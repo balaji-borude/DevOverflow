@@ -6,7 +6,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // this function is used on the question card o while creation and andding the dates to it
-export const getTimeStamp = (date: Date): string => {
+export const getTimeStamp = (createdAt: Date): string => {
+  const date = new Date(createdAt);
   const now = Date.now();
   const past = new Date(date).getTime();
   const diffMs = now - past;
