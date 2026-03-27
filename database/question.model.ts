@@ -1,4 +1,4 @@
-import { Document, model, models, Schema, Types } from "mongoose"; // ← add Document
+import { Document, model, models, Schema, Types } from "mongoose"; 
 export interface IQuestion {
     title: string;
     content: string;
@@ -10,7 +10,7 @@ export interface IQuestion {
     author: Types.ObjectId; // refereance to the uses 
 };
 
-export interface IQuestionDoc extends IQuestion, Document {} // ← add this
+export interface IQuestionDoc extends IQuestion, Document {} 
 
 
 const QuestionSchema = new Schema<IQuestion>({

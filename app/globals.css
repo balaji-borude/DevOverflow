@@ -3,7 +3,8 @@
 
 @plugin "@tailwindcss/typography";
 
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
+@custom-variant dark (&:is(.dark, .dark *));
 
 /* setup Inter font for Application  */
 :root {

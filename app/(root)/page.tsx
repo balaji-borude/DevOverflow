@@ -7,6 +7,8 @@ import ROUTES from "@/constants/route";
 
 import Link from "next/link";
 import { getQuestions } from "@/lib/actions/question.action";
+import DataRenderer from "@/components/DataRenderer";
+import { EMPTY_QUESTIONS } from "@/constants/states";
 
 // import { NotFoundError, ValidationError } from "@/lib/http-errors";
 // import handleError from "@/lib/handlers/errors";
@@ -88,7 +90,7 @@ const Home = async ({ searchParams }: SearchParams) => {
   });
 
   // destructure the data
-  const { questions } = data || {}; // pass the empty object if data is doestn exist
+  const { questions = [] } = data || {}; // pass the empty object if data is doestn exist
 
   // but above we have questions array -- react and javascript so that we can apply filter by using the two array object of questions
 
@@ -135,10 +137,20 @@ const Home = async ({ searchParams }: SearchParams) => {
       <section className="mt-11">
         <HomeFilter />
 
-        {success ? (
-          <div className="mt-10 flex w-full flex-col gap-6">
-            {/* <p> Question card </p> */}
+        <DataRenderer
+          success={success}
+          data={questions}
+          empty={EMPTY_QUESTIONS}
+          render={(questions) => (
+             questions.map((question: QuestionProps) => (
+                <QuestionCard key={question._id} question={question} />
+              ))
+          )}
+        />
 
+        {/* {success ? (
+          <div className="mt-10 flex w-full flex-col gap-6">
+         
             {questions && questions.length > 0 ? (
               questions.map((question) => (
                 <QuestionCard key={question._id} question={question} />
@@ -153,7 +165,8 @@ const Home = async ({ searchParams }: SearchParams) => {
           <div className="mt-10 w-full items-center justify-center">
             <p>{ "failed to fetch questions"}</p>
           </div>
-        )}
+        )} */}
+        
       </section>
     </>
   );
