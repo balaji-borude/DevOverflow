@@ -2,15 +2,16 @@ import {
   ActionResponse,
   ErrorResponse,
   PaginatedSearchParams,
+  Tag,
 } from "@/types/global";
 import { PaginatedSearchParamsSchema } from "../validations";
 import handleError from "../handlers/errors";
 import action from "../handlers/action";
-import Tag, { type ITag } from "@/database/tag.model";
+import TagModel from "@/database/tag.model";
 
 export const getTags = async (
   params: PaginatedSearchParams,
-): Promise<ActionResponse<{ tags: ITag[]; isNext: boolean }>> => {
+): Promise<ActionResponse<{ tags: Tag[]; isNext: boolean }>> => {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,
@@ -54,9 +55,9 @@ export const getTags = async (
   }
 
   try {
-    const totalTags = await Tag.countDocuments(filterQuery);
+    const totalTags = await TagModel.countDocuments(filterQuery);
 
-    const tags = await Tag.find(filterQuery)
+    const tags = await TagModel.find(filterQuery)
       .sort(sortCriteria)
       .skip(skip)
       .limit(limit);

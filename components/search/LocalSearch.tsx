@@ -12,9 +12,16 @@ interface Props {
   placeholder: string;
   route: string;
   imgSrc: string;
+  iconPostion?: "Left" | "Right";
 }
 
-const LocalSearch = ({ otherClasses, placeholder, route, imgSrc }: Props) => {
+const LocalSearch = ({
+  otherClasses,
+  placeholder,
+  route,
+  imgSrc,
+  iconPostion,
+}: Props) => {
   // search params from next navigation
   const searchParams = useSearchParams();
   const query = searchParams.get("query") || ""; // if the chage occure then only change the URl
@@ -67,13 +74,15 @@ const LocalSearch = ({ otherClasses, placeholder, route, imgSrc }: Props) => {
       {/*Reusable Searchbar */}
 
       {/* search icons */}
-      <Image
-        src={imgSrc}
-        width={24}
-        height={24}
-        alt="search"
-        className="cursor-pointer"
-      />
+      {iconPostion === "Left" && (
+        <Image
+          src={imgSrc}
+          width={24}
+          height={24}
+          alt="search"
+          className="cursor-pointer"
+        />
+      )}
 
       {/* Input type  */}
 
@@ -84,6 +93,17 @@ const LocalSearch = ({ otherClasses, placeholder, route, imgSrc }: Props) => {
         onChange={(e) => setSearchQuery(e.target.value)}
         className="paragraph-regular no-focus placeholder text-dark400_light700 border-none shadow-none outline-none "
       />
+
+      {/* search icons */}
+      {iconPostion === "Right" && (
+        <Image
+          src={imgSrc}
+          width={15}
+          height={15}
+          alt="search"
+          className="cursor-pointer"
+        />
+      )}
     </div>
   );
 };

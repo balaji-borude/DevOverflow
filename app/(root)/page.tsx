@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
@@ -13,68 +12,11 @@ import { EMPTY_QUESTIONS } from "@/constants/states";
 // import { NotFoundError, ValidationError } from "@/lib/http-errors";
 // import handleError from "@/lib/handlers/errors";
 
-interface QuestionProps {
-  _id: string;
-  title: string;
-  description: string;
-  tags: { _id: string; name: string }[];
-  author: { _id: string; name: string; image: string };
-  createdAt: Date;
-  upvotes: number;
-  answers: number;
-  views: number;
-}
-
-// arary of questions
-const questions: QuestionProps[] = [
-  {
-    _id: "1",
-    title: "What is React?",
-    description: "From where should I learn React?",
-    tags: [
-      { _id: "t1", name: "react" },
-      { _id: "t2", name: "frontend" },
-    ],
-    author: {
-      _id: "u1",
-      name: "Balaji",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSToP5rz4ky9W48e8f3kQ8gdA_b7fyyjP68Eg&s",
-    },
-    createdAt: new Date("2024-12-01"),
-    upvotes: 12,
-    answers: 3,
-    views: 150,
-  },
-  {
-    _id: "2",
-    title: "What is JavaScript?",
-    description: "From where should I learn JavaScript?",
-    tags: [
-      { _id: "t3", name: "javascript" },
-      { _id: "t4", name: "programming" },
-    ],
-    author: {
-      _id: "u2",
-      name: "Aarav",
-      // have to set the DiceBear Api here for profile Picture
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSToP5rz4ky9W48e8f3kQ8gdA_b7fyyjP68Eg&s",
-    },
-    createdAt: new Date("2024-12-05"),
-    upvotes: 25,
-    answers: 7,
-    views: 420,
-  },
-];
-
 interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 
 const Home = async ({ searchParams }: SearchParams) => {
-  const session = await auth();
-  // console.log("session:",session);
   // searchparams madhun query ghene ani
   //const {query=""} = await searchParams;
 
@@ -130,6 +72,7 @@ const Home = async ({ searchParams }: SearchParams) => {
           otherClasses="flex-1"
           route="/"
           imgSrc="/icons/search.svg"
+          iconPostion="Left"
         />
       </section>
 
@@ -141,11 +84,11 @@ const Home = async ({ searchParams }: SearchParams) => {
           success={success}
           data={questions}
           empty={EMPTY_QUESTIONS}
-          render={(questions) => (
-             questions.map((question: QuestionProps) => (
-                <QuestionCard key={question._id} question={question} />
-              ))
-          )}
+          render={(questions) =>
+            questions.map((question) => (
+              <QuestionCard key={question._id} question={question} />
+            ))
+          }
         />
 
         {/* {success ? (
@@ -166,7 +109,6 @@ const Home = async ({ searchParams }: SearchParams) => {
             <p>{ "failed to fetch questions"}</p>
           </div>
         )} */}
-        
       </section>
     </>
   );
