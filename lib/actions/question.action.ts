@@ -316,7 +316,7 @@ export async function getQuestions(
   }
 
   try {
-    // throw new Error("error");
+    //throw new Error("error");
 
     // get total number of questions --> to tell which one is the next question
     const totalQuestions = await Question.countDocuments(filterQuery);

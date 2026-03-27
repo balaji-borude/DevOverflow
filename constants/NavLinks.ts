@@ -14,6 +14,11 @@ export const sidebarLinks = [
     route: "/collection",
     label: "Collections",
   },
+    {
+    imageURL: "/icons/tag.svg",
+    route: "/tags",
+    label: "Tags",
+  },
   {
     imageURL: "/icons/suitcase.svg",
     route: "/jobs",

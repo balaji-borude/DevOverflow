@@ -19,7 +19,7 @@ export const  DEFAULT_ERROR = {
 };
 
 export const EMPTY_QUESTIONS = {
-    title:"No Questions Found",
+    title:"Ahh! No Questions Found",
     message:"The question is empty it's waiting for you the waiting for you to fill it",
     button:{
         text:'Ask a Question',

@@ -1,7 +1,6 @@
 import { DEFAULT_EMPTY, DEFAULT_ERROR } from "@/constants/states";
 import Image from "next/image";
 import Link from "next/link";
-import { da } from "zod/v4/locales";
 
 interface Props<T> {
   success: boolean;
@@ -19,7 +18,7 @@ interface Props<T> {
       href: string;
     };
   };
-  render?: (data: T) => React.ReactNode;
+  render: (data: T[]) => React.ReactNode;
 }
 
 interface StateSkeletonProps {
@@ -88,8 +87,8 @@ const DataRenderer = <T,>({
     return(
           <StateSkeleton
       image={{
-        light: "/images/light-illustration.png",
-        dark: "/images/dark-illustration.png",
+        light: "/images/Light-ErrorState illustration.png",
+        dark: "/images/Dark-ErrorState Ilustration.png",
         alt: "Empty state illustration",
       }}
       title={error?.message || DEFAULT_ERROR.title}
