@@ -10,7 +10,7 @@ export interface IQuestion {
     author: Types.ObjectId; // refereance to the uses 
 };
 
-export interface IQuestionDoc extends IQuestion, Document {} 
+export interface IQuestionDoc extends IQuestion, Document {}  
 
 
 const QuestionSchema = new Schema<IQuestion>({

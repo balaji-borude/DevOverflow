@@ -2,17 +2,20 @@ import ROUTES from "@/constants/route";
 import Link from "next/link";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 const UserAvatar = ({
   id,
   name,
   image,
-  className,
+  className, 
+  fallbackClassName,
 }: {
   id: string;
   name?: string;
   image?: string;
   className: string;
+  fallbackClassName? : string;
 }) => {
   const initials = name
     ?.split(" ")
@@ -36,7 +39,7 @@ const UserAvatar = ({
         ) : (
           // if user is not have iamge then used the default avatar of shadcn
 
-          <AvatarFallback className="primary-gradient font-space-grotesk font-bold tracking-wider text-white">
+          <AvatarFallback className={cn("primary-gradient font-space-grotesk font-bold tracking-wider text-white",fallbackClassName)}>
             {initials || "U"}
           </AvatarFallback>
         )}

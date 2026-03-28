@@ -176,3 +176,26 @@ export const getTechDescription = (techName: string): string => {
   return `${techName} is a technology or tool widely used in web development, providing valuable features for building modern and scalable applications.`;
 };
 
+
+// for viwesr in the question card
+export const getViewsCount = (views: number): string => {
+  if (views < 1000) {
+    return `${views}`;
+  }
+
+  if (views < 10000) {
+    return `${Math.round(views / 100) / 10}k`;
+  }
+
+  return `${Math.round(views / 1000) / 10}k`;
+};
+
+export const formatNumber = (num: number): string => {
+  if(num>=1000000){
+    return(num/1000000).toFixed(2)+"M"; 
+  }else if(num>=1000){
+    return(num/1000).toFixed(2)+"K"; 
+  }else{
+    return num.toString();
+  }
+}
