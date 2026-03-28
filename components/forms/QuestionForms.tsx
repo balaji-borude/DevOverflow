@@ -4,7 +4,7 @@
 
 import { AskQuestionSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import type { KeyboardEvent } from "react";
 import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
 import { toast } from "sonner";
@@ -64,7 +64,7 @@ defaultValues: {
 
   // tags
   const handleInputKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
+    e: KeyboardEvent<HTMLInputElement>,
     tags: string[],
   ) => {
     if (e.key !== "Enter") return;

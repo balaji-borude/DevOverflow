@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 // here we are going to import MDXEditor from @mdxeditor/editor
 //import { MDXEditor } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";

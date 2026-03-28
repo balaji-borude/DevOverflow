@@ -42,4 +42,9 @@ interface RouteParams{
  // get question 
  interface GetQuestionParams{
     questionId:string;
+}
+
+ // get tag question
+ interface GetTagQuestionParams extends Omit<PaginatedSearchParams,"filter"> {
+    tagId:string;
  }

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 
-export interface Tag {
+export interface Tags {
   _id: string;
   name: string;
+  questions?: number;
 }
 
 export interface Author {

@@ -5,7 +5,6 @@ import { sidebarLinks } from "@/constants/NavLinks"; // Sidebar Links
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import React from "react";
 import { cn } from "@/lib/utils";
 import { SheetClose } from "@/components/ui/sheet";
 
@@ -84,8 +83,7 @@ const NavLinks = ({
             {LinkComponent}
           </SheetClose>
         ) : (
-          // if it is not mobile nav then
-          <React.Fragment key={item.route}> {LinkComponent}</React.Fragment>
+          LinkComponent
         );
       })}
     </>

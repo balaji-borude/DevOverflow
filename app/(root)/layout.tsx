@@ -1,7 +1,7 @@
 import LeftSideBar from "@/components/navigation/LeftSideBar";
 import Navbar from "@/components/navigation/navbar/Navbar";
 import RightSideBar from "@/components/navigation/RightSideBar";
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { Toaster } from "sonner";
 // import { Toaster } from 'sonner'
 

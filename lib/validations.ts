@@ -1,4 +1,3 @@
-import { filter } from "@mdxeditor/editor";
 import { z } from "zod";
 
 // signin Schema  of Form
@@ -152,4 +151,8 @@ export const PaginatedSearchParamsSchema = z.object({
   query:z.string().optional(),
   filter:z.string().optional(),
   sort:z.string().optional(),
+});
+
+export const GetTagQuestionSchema = PaginatedSearchParamsSchema.extend({
+  tagId:z.string().min(1,{message:"TagId is required"})
 })

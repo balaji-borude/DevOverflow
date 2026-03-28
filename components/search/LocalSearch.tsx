@@ -2,7 +2,7 @@
 
 // here we used the query-string paramenter  --> placed in lib/Url.ts file
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { formUrlQuery, removeKeyFromQuery } from "@/lib/Url"; // imported the Form url fron lib/Url/ts constant file

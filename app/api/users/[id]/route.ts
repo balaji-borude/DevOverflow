@@ -5,8 +5,6 @@ import dbConnect from "@/lib/mongodb";
 import { UserSchema } from "@/lib/validations";
 import { APIErrorResponse } from "@/types/global";
 import { NextResponse } from "next/server";
-import { formUrlQuery } from "../../../../lib/Url";
-import { success } from "zod";
 
 // get User By id Route
 export async function GET(
