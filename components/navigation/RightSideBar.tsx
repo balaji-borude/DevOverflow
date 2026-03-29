@@ -31,9 +31,9 @@ const topQuestions: questionProps[] = [
 
 const popularTags = [
   { _id: "1", name: "react", questions: 90 },
-  { _id: "3", name: "express", questions: 290 },
+  // { _id: "3", name: "express", questions: 290 },
   { _id: "4", name: "javascript", questions: 10 },
-  { _id: "2", name: "next", questions: 190 },
+  // { _id: "2", name: "next", questions: 190 },
   { _id: "5", name: "python", questions: 80 },
   { _id: "6", name: "java", questions: 30 },
 ];
