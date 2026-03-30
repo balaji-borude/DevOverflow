@@ -3,6 +3,7 @@ import QuestionForms from "@/components/forms/QuestionForms";
 import { notFound, redirect } from "next/navigation";
 import { getQuestion } from "@/lib/actions/question.action";
 import ROUTES from "@/constants/route";
+import type { RouteParams } from "@/types/action";
 
 const EditQuestion = async ({ params }: RouteParams) => {
   const { id } = await params;

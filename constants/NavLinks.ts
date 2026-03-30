@@ -4,11 +4,11 @@ export const sidebarLinks = [
     route: "/",
     label: "Home",
   },
-  {
-    imageURL: "/icons/users.svg",
-    route: "/community",
-    label: "Community",
-  },
+  // {
+  //   imageURL: "/icons/users.svg",
+  //   route: "/community",
+  //   label: "Community",
+  // },
   {
     imageURL: "/icons/star.svg",
     route: "/collection",
@@ -19,11 +19,11 @@ export const sidebarLinks = [
     route: "/tags",
     label: "Tags",
   },
-  {
-    imageURL: "/icons/suitcase.svg",
-    route: "/jobs",
-    label: "Find Jobs",
-  },
+  // {
+  //   imageURL: "/icons/suitcase.svg",
+  //   route: "/jobs",
+  //   label: "Find Jobs",
+  // },
   {
     imageURL: "/icons/user.svg",
     route: "/profile",

@@ -2,16 +2,16 @@ import TagCards from "@/components/cards/TagCards";
 import Metrics from "@/components/Metrics";
 import UserAvatar from "@/components/UserAvatar";
 import ROUTES from "@/constants/route";
+import type { RouteParams } from "@/types/action";
 import type { Tags } from "@/types/global";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
-
-// sample question
-
 import Link from "next/link";
 
 import Preview from "@/components/editor/Preview";
 import { getQuestion } from "@/lib/actions/question.action";
 import { redirect } from "next/navigation";
+import View from "../View";
+
 
 const QuestionDetails = async ({ params }: RouteParams) => {
   //   He Params ahe
@@ -28,11 +28,15 @@ const QuestionDetails = async ({ params }: RouteParams) => {
 
   return (
     <>
+
+      <View questionId={id}/>
+
+      
       {/* <div>  QuestionDetails page {id}</div> */}
       <div className=" flex-start w-full flex-col">
         <div className="flex w-full flex-col-reverse justify-between">
           <div className="flex items-center justify-start gap-1">
-            <div className="w-fit rounded-full border-2 border-light400_dark300 px-3 py-1.5 text-sm">
+            <div className=" flex space-x-2 w-fit rounded-full border-2 border-light400_dark300 px-3 py-1.5 text-sm">
               <UserAvatar
                 id={author._id}
                 name={author.name}

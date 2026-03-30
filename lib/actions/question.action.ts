@@ -13,6 +13,7 @@ import {
   AskQuestionSchema,
   EditQuestionSchema,
   GetQuestionSchema,
+  IncrementViewsSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
 import handleError from "../handlers/errors";
@@ -21,6 +22,13 @@ import TagQuestion from "@/database/tag-question.model";
 
 import Question, { type IQuestion } from "@/database/question.model";
 import User from "@/database/user.model";
+import type {
+  CreateQuestionParams,
+  GetQuestionParams,
+  IncrementViewsParams,
+} from "@/types/action";
+import { revalidatePath } from "next/cache";
+import ROUTES from "@/constants/route";
 
 console.log("User model registered: -------->", User.modelName);
 // create question
@@ -106,7 +114,7 @@ export async function createQuestion(
 // edit question
 export async function editQuestion(
   params: CreateQuestionParams & { questionId: string },
-): Promise<ActionResponse<IQuestion>> { 
+): Promise<ActionResponse<IQuestion>> {
   const validationResult = await action({
     params,
     schema: EditQuestionSchema,
@@ -240,7 +248,10 @@ export async function getQuestion(
   const { questionId } = validationResult.params!;
 
   try {
-    const question = await Question.findById(questionId).populate("tags").populate("author", " _id name image").lean();
+    const question = await Question.findById(questionId)
+      .populate("tags")
+      .populate("author", " _id name image")
+      .lean();
 
     if (!question) {
       throw new Error("Question Not Found ");
@@ -284,11 +295,11 @@ export async function getQuestions(
   //   ];
   // }
   if (query) {
-  filterQuery.$or = [
-    { title: { $regex: new RegExp(query, "i") } },
-    { content: { $regex: new RegExp(query, "i") } },
-  ];
-}
+    filterQuery.$or = [
+      { title: { $regex: new RegExp(query, "i") } },
+      { content: { $regex: new RegExp(query, "i") } },
+    ];
+  }
   // ✅ Fix
   // if (query) {
   //   filterQuery.$or = [
@@ -339,9 +350,43 @@ export async function getQuestions(
         isNext,
       },
     };
-
   } catch (error) {
-      console.error("getQuestions error:=======>", error);
+    console.error("getQuestions error:=======>", error);
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+// Question views increment action
+export async function incrementQuestionViews(
+  params: IncrementViewsParams,
+): Promise<ActionResponse<{ views: number }>> {
+  const validationResult = await action({
+    params,
+    schema: IncrementViewsSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { questionId } = validationResult.params!;
+
+  try {
+    const question = await Question.findById(questionId);
+    if (!question) {
+      throw new Error("Question Not Found");
+    }
+
+    question.views += 1;
+    await question.save();
+
+    revalidatePath(ROUTES.QUESTION(questionId)); // Revalidate the question page to update the view count 
+    return { 
+      success: true, 
+      data: { views: question.views } 
+    };
+    
+  } catch (error) {
     return handleError(error) as ErrorResponse;
   }
 }

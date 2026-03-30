@@ -10,6 +10,7 @@ import handleError from "../handlers/errors";
 import action from "../handlers/action";
 import Tag from "@/database/tag.model";
 import Question from "@/database/question.model";
+import type { GetTagQuestionParams } from "@/types/action";
 
 // get the tags for the tag page
 export const getTags = async (

@@ -52,3 +52,4 @@ const Tags = async ({ searchParams }: RouteParams) => {
 };
 
 export default Tags;
+import type { RouteParams } from "@/types/action";
