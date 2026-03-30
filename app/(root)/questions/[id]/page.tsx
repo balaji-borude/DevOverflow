@@ -9,10 +9,48 @@ import { formatNumber, getTimeStamp } from "@/lib/utils";
 
 import Link from "next/link";
 
+import Preview from "@/components/editor/Preview";
+
+// const sampleQuestions = {
+//   id: "1",
+//   title: "How to implement JWT authentication in Express?",
+//   content: "  <div className="mt-8 flex flex-wrap  gap-2">
+//       {
+//         sampleQuestions.tags.map((tag:Tags)=>(
+//           <TagCards
+//             key={tag._id}
+//             _id={tag._id}
+//             name={tag.name}
+//             // questions={tag.questions}
+//             compact
+//           />
+//         ))
+//       }
+//       </div>",
+//   tags: [
+//     { _id: "tag1", name: "react", questions: 10 },
+//     { _id: "tag2", name: "next", questions: 20 },
+//     { _id: "tag3", name: "javascript", questions: 30 },
+//     { _id: "tag4", name: "express", questions: 40 },
+//   ],
+
+//   views: 150,
+//   upvotes: 20,
+//   downvotes: 2,
+//   answers: 5,
+//   createdAt: new Date(),
+//   author: {
+//     _id: "sdfh23242",
+//     name: "RAM ",
+//     image: "https://avatars.githubusercontent.com/u/10048474?v=4",
+//   },
+// };
+
 const sampleQuestions = {
   id: "1",
   title: "How to implement JWT authentication in Express?",
-  content: "I am confused about access token and refresh token implementation.",
+  content: `hello this is  the content of the question. It can include markdown syntax, code snippets, and other formatting. The content is stored as a string and can be rendered using a markdown parser or a rich text editor.
+  `,
   tags: [
     { _id: "tag1", name: "react", questions: 10 },
     { _id: "tag2", name: "next", questions: 20 },
@@ -27,7 +65,7 @@ const sampleQuestions = {
   createdAt: new Date(),
   author: {
     _id: "sdfh23242",
-    name: "RAM ",
+    name: "Ram",
     image: "https://avatars.githubusercontent.com/u/10048474?v=4",
   },
 };
@@ -95,6 +133,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
       </div>
 
       <p>Prevew Content</p>
+      <Preview content={sampleQuestions.content}/>
 
       <div className="mt-8 flex flex-wrap  gap-2">
       {
