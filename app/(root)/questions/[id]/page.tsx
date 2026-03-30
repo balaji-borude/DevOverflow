@@ -10,69 +10,22 @@ import { formatNumber, getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
 
 import Preview from "@/components/editor/Preview";
-
-// const sampleQuestions = {
-//   id: "1",
-//   title: "How to implement JWT authentication in Express?",
-//   content: "  <div className="mt-8 flex flex-wrap  gap-2">
-//       {
-//         sampleQuestions.tags.map((tag:Tags)=>(
-//           <TagCards
-//             key={tag._id}
-//             _id={tag._id}
-//             name={tag.name}
-//             // questions={tag.questions}
-//             compact
-//           />
-//         ))
-//       }
-//       </div>",
-//   tags: [
-//     { _id: "tag1", name: "react", questions: 10 },
-//     { _id: "tag2", name: "next", questions: 20 },
-//     { _id: "tag3", name: "javascript", questions: 30 },
-//     { _id: "tag4", name: "express", questions: 40 },
-//   ],
-
-//   views: 150,
-//   upvotes: 20,
-//   downvotes: 2,
-//   answers: 5,
-//   createdAt: new Date(),
-//   author: {
-//     _id: "sdfh23242",
-//     name: "RAM ",
-//     image: "https://avatars.githubusercontent.com/u/10048474?v=4",
-//   },
-// };
-
-const sampleQuestions = {
-  id: "1",
-  title: "How to implement JWT authentication in Express?",
-  content: `hello this is  the content of the question. It can include markdown syntax, code snippets, and other formatting. The content is stored as a string and can be rendered using a markdown parser or a rich text editor.
-  `,
-  tags: [
-    { _id: "tag1", name: "react", questions: 10 },
-    { _id: "tag2", name: "next", questions: 20 },
-    { _id: "tag3", name: "javascript", questions: 30 },
-    { _id: "tag4", name: "express", questions: 40 },
-  ],
-
-  views: 150,
-  upvotes: 20,
-  downvotes: 2,
-  answers: 5,
-  createdAt: new Date(),
-  author: {
-    _id: "sdfh23242",
-    name: "Ram",
-    image: "https://avatars.githubusercontent.com/u/10048474?v=4",
-  },
-};
+import { getQuestion } from "@/lib/actions/question.action";
+import { redirect } from "next/navigation";
 
 const QuestionDetails = async ({ params }: RouteParams) => {
   //   He Params ahe
   const { id } = await params; // question id ghenasathi use hote
+
+  // actual fetch question details from database using question id
+
+  const { success, data: question } = await getQuestion({ questionId: id });
+
+  if (!success || !question) {
+    return redirect("/404");
+  }
+  const { author, createdAt, answers, views, tags, title, content } = question;
+
   return (
     <>
       {/* <div>  QuestionDetails page {id}</div> */}
@@ -81,15 +34,15 @@ const QuestionDetails = async ({ params }: RouteParams) => {
           <div className="flex items-center justify-start gap-1">
             <div className="w-fit rounded-full border-2 border-light400_dark300 px-3 py-1.5 text-sm">
               <UserAvatar
-                id={sampleQuestions.author._id}
-                name={sampleQuestions.author.name}
+                id={author._id}
+                name={author.name}
                 className="size-[22px]"
                 fallbackClassName="text-[10px]"
               />
 
-              <Link href={ROUTES.PROFILE(sampleQuestions.author._id)}>
+              <Link href={ROUTES.PROFILE(author._id)}>
                 <p className="paragraph-semibold text-dark300_light700 ">
-                  {sampleQuestions.author.name}
+                  {author.name}
                 </p>
               </Link>
             </div>
@@ -100,7 +53,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
           </div>
         </div>
         <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full">
-          {sampleQuestions.title}
+          {title}
         </h2>
       </div>
 
@@ -109,7 +62,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
         <Metrics
           imgUrl="/icons/clock.svg"
           alt="clock"
-          value={`asked ${getTimeStamp(new Date(sampleQuestions.createdAt))}`}
+          value={`asked ${getTimeStamp(new Date(createdAt))}`}
           title=""
           textStyles="small-regular text-dark400_light700"
           titleStyles="max-sm:hidden"
@@ -117,7 +70,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
         <Metrics
           imgUrl="/icons/message.svg"
           alt="message icon"
-          value={sampleQuestions.answers}
+          value={answers}
           title=""
           textStyles="small-regular text-dark400_light700"
           titleStyles="max-sm:hidden"
@@ -125,7 +78,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
         <Metrics
           imgUrl="/icons/eye.svg"
           alt="eye icon "
-          value={formatNumber(sampleQuestions.views)}
+          value={formatNumber(views)}
           title=""
           textStyles="small-regular text-dark400_light700"
           titleStyles="max-sm:hidden"
@@ -133,11 +86,10 @@ const QuestionDetails = async ({ params }: RouteParams) => {
       </div>
 
       <p>Prevew Content</p>
-      <Preview content={sampleQuestions.content}/>
+      <Preview content={content} />
 
       <div className="mt-8 flex flex-wrap  gap-2">
-      {
-        sampleQuestions.tags.map((tag:Tags)=>(
+        {tags.map((tag: Tags) => (
           <TagCards
             key={tag._id}
             _id={tag._id}
@@ -145,8 +97,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
             // questions={tag.questions}
             compact
           />
-        ))
-      }
+        ))}
       </div>
     </>
   );
