@@ -84,23 +84,22 @@ const DataRenderer = <T,>({
 }: Props<T>) => {
   // if data is not present
   if (!success) {
-    return(
-          <StateSkeleton
-      image={{
-        light: "/images/Light-ErrorState illustration.png",
-        dark: "/images/Dark-ErrorState Ilustration.png",
-        alt: "Empty state illustration",
-      }}
-      title={error?.message || DEFAULT_ERROR.title}
-      message={
-        error?.details
-          ? JSON.stringify(error.details, null, 2)
-          : DEFAULT_ERROR.message
-      }
-      button={DEFAULT_ERROR.button}
-    />
-    )
-
+    return (
+      <StateSkeleton
+        image={{
+          light: "/images/Light-ErrorState illustration.png",
+          dark: "/images/Dark-ErrorState Ilustration.png",
+          alt: "Empty state illustration",
+        }}
+        title={error?.message || DEFAULT_ERROR.title}
+        message={
+          error?.details
+            ? JSON.stringify(error.details, null, 2)
+            : DEFAULT_ERROR.message
+        }
+        button={DEFAULT_ERROR.button}
+      />
+    );
   }
 
   // this is for if the data is present

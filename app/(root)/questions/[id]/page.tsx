@@ -23,7 +23,10 @@ const QuestionDetails = async ({ params }: RouteParams) => {
 
   if (!success || !question) {
     return redirect("/404");
-  }
+  };
+
+  console.log("Printing the questions data----->",question);
+
   const { author, createdAt, answers, views, tags, title, content } = question;
 
   return (
@@ -39,7 +42,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
             <div className=" flex space-x-2 w-fit rounded-full border-2 border-light400_dark300 px-3 py-1.5 text-sm">
               <UserAvatar
                 id={author._id}
-                name={author.name}
+                name={author?.name}
                 className="size-[22px]"
                 fallbackClassName="text-[10px]"
               />
@@ -62,7 +65,6 @@ const QuestionDetails = async ({ params }: RouteParams) => {
       </div>
 
       <div className="mb-8 mt-5 flex flex-wrap gap-4">
-        {/* metrics timestamp --> when did question created */}
         <Metrics
           imgUrl="/icons/clock.svg"
           alt="clock"

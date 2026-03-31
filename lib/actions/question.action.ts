@@ -233,7 +233,7 @@ export async function editQuestion(
 }
 // Get question -- all server action become a -->  Post request --> here we fetching the question but
 export async function getQuestion(
-  params: GetQuestionParams & { questionId: string },
+  params: GetQuestionParams,
 ): Promise<ActionResponse<Questions>> {
   const validationResult = await action({
     params,
