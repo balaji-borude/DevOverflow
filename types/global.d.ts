@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import Answer from '@/database/answers.model';
+import { auth } from '@/auth';
 
 export interface Tags {
   _id: string;
@@ -50,4 +52,11 @@ export interface PaginatedSearchParams {
   query?: string;
   filter?: string;
   sort?: string;
+};
+
+interface Answers{
+  _id:string;
+  author:string;
+  content:string;
+  createdAt:Date;
 }

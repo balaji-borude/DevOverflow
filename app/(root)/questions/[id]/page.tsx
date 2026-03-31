@@ -12,6 +12,7 @@ import { getQuestion } from "@/lib/actions/question.action";
 import { redirect } from "next/navigation";
 import View from "../View";
 import AnswerForm from "@/components/forms/AnswerForm";
+import { getAnswers } from "@/lib/actions/answer.action";
 
 
 const QuestionDetails = async ({ params }: RouteParams) => {
@@ -25,6 +26,15 @@ const QuestionDetails = async ({ params }: RouteParams) => {
   if (!success || !question) {
     return redirect("/404");
   };
+  // questions Answers
+  const {success:areAnswersLoaded,data:answersResult,error:answersError  } = await getAnswers({
+    questionId: id,
+    page: 1,
+    pageSize: 10,
+    filter: "latest",
+  });
+
+  console.log("All the anwers --->", answersResult);
 
  // console.log("Printing the questions data----->",question);
 

@@ -1,8 +1,7 @@
 "use server";
 
-import Answer, { IAnswer } from "@/database/answers.model";
-import { ActionResponse, ErrorResponse } from "@/types/global";
-import { AnswerServerSchema } from "../validations";
+import { ActionResponse, Answers, ErrorResponse } from "@/types/global";
+import { AnswerServerSchema, GetAnswersSchema } from "../validations";
 import action from "../handlers/action";
 import handleError from "../handlers/errors";
 import mongoose from "mongoose";
@@ -10,8 +9,10 @@ import Question from "@/database/question.model";
 import { NotFoundError } from "../http-errors";
 import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/route";
-import {CreateAnswerParams} from "@/types/action";
+import { CreateAnswerParams, GetAnswersParams } from "@/types/action";
+import Answer, { IAnswer } from "@/database/answers.model";
 
+// create answer
 export async function createAnswer(
   params: CreateAnswerParams,
 ): Promise<ActionResponse<IAnswer>> {
@@ -65,5 +66,68 @@ export async function createAnswer(
     return handleError(error) as ErrorResponse;
   } finally {
     await session.endSession();
+  }
+}
+
+//get all the answers of a question
+
+export async function getAnswers(params: GetAnswersParams): Promise<
+  ActionResponse<{
+    Answers: IAnswer[];
+    isNext: boolean;
+    totalAnswers: number;
+  }>
+> {
+  const validationResult = await action({ params, schema: GetAnswersSchema });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { questionId, page = 1, pageSize = 10, filter } = params;
+
+  const skip = Number(page - 1) * pageSize;
+
+  const limit = Number(pageSize);
+  let sortCriteria = {};
+
+  switch (filter) {
+    case "latest":
+      sortCriteria = { createdAt: -1 };
+      break;
+    case "oldest":
+      sortCriteria = { createdAt: 1 };
+      break;
+    case "popular":
+      sortCriteria = { upvotes: -1 };
+    default:
+      sortCriteria = { createdAt: -1 };
+      break;
+  }
+
+  try {
+    const totalAnswers = await Answer.countDocuments({ question: questionId });
+
+    const answers = await Answer.find({ question: questionId })
+    .populate('author','_id name image')
+      .sort(sortCriteria)
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const isNext = totalAnswers > skip + answers.length;
+    // if (!isNext) answers.pop();
+
+    return {
+      success: true,
+      data: {
+        Answers: JSON.parse(JSON.stringify(answers)),
+        isNext,
+        totalAnswers,
+      },
+    };
+
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
   }
 }
