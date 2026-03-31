@@ -110,7 +110,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
       {/* section for answer form */}
       <section className="my-5">
 
-      <AnswerForm />
+      <AnswerForm questionId={question._id} />
       </section>
     </>
   );

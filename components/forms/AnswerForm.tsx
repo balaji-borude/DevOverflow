@@ -25,13 +25,16 @@ import {
 } from "@/components/ui/form";
 
 import { AnswerSchema } from "@/lib/validations";
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 // import Editor from "../editor";
 import dynamic from "next/dynamic";
 import { MDXEditorMethods } from "@mdxeditor/editor";
 //import{RealoadIcon} from "radix-ui/icons/Reload";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
+import { createAnswer } from "@/lib/actions/answer.action";
+import ROUTES from "@/constants/route";
+import { start } from "repl";
 
 // type for action in ONclick presss //
 type ActionResponse = {
@@ -44,8 +47,11 @@ type ActionResponse = {
 
 const Editor = dynamic(() => import("../editor"), { ssr: false });
 
-const AnswerForm = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const AnswerForm = ({questionId}:{questionId:string}) => {
+
+    const[isAnswering,startAnsweringTransition] = useTransition()
+
+ // const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAiSubmiting, setisAiSubmiting] = useState(false);
 
   const router = useRouter();
@@ -59,7 +65,20 @@ const AnswerForm = () => {
 
   // form handler
   const handleSubmit = async (values: z.infer<typeof AnswerSchema>) => {
-    console.log(values);
+    startAnsweringTransition(async()=>{
+ const result = await createAnswer({questionId,content:values.content});
+
+    if (result.success) {
+      toast.success("Answer Posted successfully");
+      startAnsweringTransition(()=>{
+        router.push(ROUTES.QUESTION(questionId));
+      })
+    }else{
+        toast.error(result?.error?.message || "Failed to post answer");
+    }
+    })
+
+   
   };
 
   const editorRef = useRef<MDXEditorMethods>(null);
@@ -72,7 +91,7 @@ const AnswerForm = () => {
         </h4>
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
-          disabled={isSubmitting}
+          disabled={isAnswering}
         >
           {isAiSubmiting ? (
             <>
@@ -125,7 +144,7 @@ const AnswerForm = () => {
               type="submit"
               className="primary-gradient w-fit rounded-xs p-1 hover:cursor-pointer"
             >
-              {isSubmitting ? (
+              {isAnswering   ? (
                 <>
                   <ReloadIcon className="mr-2 size-4 animate-spin" />
                   Posting...
