@@ -23,7 +23,7 @@ const topQuestions: questionProps[] = [
     _id: "4",
     title: "Is React-RouterDom is Updated & how to create routes in react ?",
   },
-  {
+   {
     _id: "5",
     title: "No more question Everything is fine because of BajrangBali ",
   },

@@ -3,6 +3,7 @@ import { getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
 import TagCards from "./TagCards";
 import Metrics from "../Metrics";
+import UserAvatar from "../UserAvatar";
 
 interface QuestionProps {
   _id: string;
@@ -18,9 +19,18 @@ interface QuestionProps {
 
 interface Props {
   question: QuestionProps;
-}
-const QuestionCard = ({ question }: Props) => {
+};
 
+
+const getInitials = (name: string) => {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
+const QuestionCard = ({ question }: Props) => {
   // console.log("Get the questions --> ",question)
   // desstruct the question part here
   const {
@@ -35,8 +45,7 @@ const QuestionCard = ({ question }: Props) => {
     views,
   } = question;
 
-  console.log("print the question in questioncard compo--> ", question)
-  
+ // console.log("print the question in questioncard compo--> ", question);
 
   return (
     <div className="card-wrapper rounded-[10px]  p-9 sm:px-11  ">
@@ -64,19 +73,63 @@ const QuestionCard = ({ question }: Props) => {
         ))}
       </div>
 
-      
       <div className="flex-between mt-6 w-full flex-wrap gap-3">
-
         {/* Author metricks */}
-        <Metrics
-          imgUrl={author?.image}
+        {/* <Metrics
+          imgUrl={author?.image }
           alt={author.name}
           value={author.name}
           title={`. asked ${getTimeStamp(createdAt)}`}
           href={ROUTES.PROFILE(author._id)}
           textStyles="body-medium text-dark400_light700"
           isAuthor
-        />
+        /> */}
+{author?.image ? (
+    <Metrics
+      imgUrl={author.image}
+      alt={author.name}
+      value={author.name}
+      title={`. asked ${getTimeStamp(createdAt)}`}
+      href={ROUTES.PROFILE(author._id)}
+      textStyles="body-medium text-dark400_light700"
+      isAuthor
+    />
+  ) : (
+    <Link href={ROUTES.PROFILE(author._id)} className="flex items-center gap-2">
+      {/* Initials avatar */}
+      <div className="flex size-8 items-center justify-center 
+                      rounded-full bg-primary-500 text-xs 
+                      font-bold text-white">
+        {getInitials(author.name)}
+      </div>
+      <span className="body-medium text-dark400_light700">
+        {author.name}
+        <span className="small-regular ml-1">
+          · asked {getTimeStamp(createdAt)}
+        </span>
+      </span>
+    </Link>
+  )}
+        {/* {author?.image ? (
+          <Metrics
+            imgUrl={author.image}
+            alt={author.name}
+            value={author.name}
+            title={`. asked ${getTimeStamp(createdAt)}`}
+            href={ROUTES.PROFILE(author._id)}
+            textStyles="body-medium text-dark400_light700"
+            isAuthor
+          />
+        ) : (
+          <UserAvatar
+            id={author._id}
+            name={author.name}
+            image={author?.image}
+            className="size-8"
+            fallbackClassName="text-xs"
+            
+          />
+        )} */}
 
         {/* like share logo and other metricks */}
         <div className="flex items-center gap-3 max-sm:flex-wrap max-sm:justify-start">

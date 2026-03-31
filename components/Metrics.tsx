@@ -23,11 +23,18 @@ const Metrics = ({
   textStyles,
   imgStyles,
   isAuthor,
-  titleStyles
+  titleStyles,
 }: Props) => {
   // main contetn want to display
   const metricContent = (
     <div className="flex-center flex gap-1">
+      {/* <UserAvatar
+                id={author._id}
+                name={author?.name}
+                className="size-[22px]"
+                fallbackClassName="text-[10px]"
+              /> */}
+      
       <Image
         src={imgUrl}
         width={16}
@@ -40,7 +47,10 @@ const Metrics = ({
 
       {title ? (
         <span
-          className={cn(`small-regular  text-dark400_light700 line-clamp-1`,titleStyles)}
+          className={cn(
+            `small-regular  text-dark400_light700 line-clamp-1`,
+            titleStyles,
+          )}
         >
           {title}
         </span>
