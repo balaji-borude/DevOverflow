@@ -11,6 +11,7 @@ import Preview from "@/components/editor/Preview";
 import { getQuestion } from "@/lib/actions/question.action";
 import { redirect } from "next/navigation";
 import View from "../View";
+import AnswerForm from "@/components/forms/AnswerForm";
 
 
 const QuestionDetails = async ({ params }: RouteParams) => {
@@ -25,7 +26,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
     return redirect("/404");
   };
 
-  console.log("Printing the questions data----->",question);
+ // console.log("Printing the questions data----->",question);
 
   const { author, createdAt, answers, views, tags, title, content } = question;
 
@@ -105,6 +106,12 @@ const QuestionDetails = async ({ params }: RouteParams) => {
           />
         ))}
       </div>
+
+      {/* section for answer form */}
+      <section className="my-5">
+
+      <AnswerForm />
+      </section>
     </>
   );
 };

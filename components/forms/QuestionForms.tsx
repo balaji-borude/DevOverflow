@@ -31,6 +31,8 @@ import ROUTES from "@/constants/route";
 import { Questions } from "@/types/global";
 import { type IQuestionDoc } from "@/database/question.model";
 
+  const Editor = dynamic(() => import("../editor"), { ssr: false });
+
 interface Params {
   question?: Questions;
   isEdit?: boolean;
@@ -40,7 +42,6 @@ const QuestionForms = ({ question, isEdit = false }: Params) => {
 
   const [tagInput, setTagInput] = useState("");
 
-  const Editor = dynamic(() => import("../editor"), { ssr: false });
 
   // form validation import from ./validations.ts file
   const form = useForm<{

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import Answer from '../database/answers.model';
 
 // signin Schema  of Form
 export const SignInSchema = z.object({
@@ -162,3 +163,9 @@ export const GetTagQuestionSchema = PaginatedSearchParamsSchema.extend({
 export const IncrementViewsSchema = z.object({
   questionId:z.string().min(1,{message:"Question Id is required "})
 })
+
+
+
+export const AnswerSchema = z.object({
+  content:z.string().min(50,{message:"Answer has to more than 50 characters"}),
+});

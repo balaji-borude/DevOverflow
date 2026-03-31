@@ -3,7 +3,6 @@ import { getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
 import TagCards from "./TagCards";
 import Metrics from "../Metrics";
-import UserAvatar from "../UserAvatar";
 
 interface QuestionProps {
   _id: string;
@@ -19,8 +18,7 @@ interface QuestionProps {
 
 interface Props {
   question: QuestionProps;
-};
-
+}
 
 const getInitials = (name: string) => {
   return name
@@ -45,7 +43,7 @@ const QuestionCard = ({ question }: Props) => {
     views,
   } = question;
 
- // console.log("print the question in questioncard compo--> ", question);
+  // console.log("print the question in questioncard compo--> ", question);
 
   return (
     <div className="card-wrapper rounded-[10px]  p-9 sm:px-11  ">
@@ -84,32 +82,37 @@ const QuestionCard = ({ question }: Props) => {
           textStyles="body-medium text-dark400_light700"
           isAuthor
         /> */}
-{author?.image ? (
-    <Metrics
-      imgUrl={author.image}
-      alt={author.name}
-      value={author.name}
-      title={`. asked ${getTimeStamp(createdAt)}`}
-      href={ROUTES.PROFILE(author._id)}
-      textStyles="body-medium text-dark400_light700"
-      isAuthor
-    />
-  ) : (
-    <Link href={ROUTES.PROFILE(author._id)} className="flex items-center gap-2">
-      {/* Initials avatar */}
-      <div className="flex size-8 items-center justify-center 
+        {author?.image ? (
+          <Metrics
+            imgUrl={author.image}
+            alt={author.name}
+            value={author.name}
+            title={`. asked ${getTimeStamp(createdAt)}`}
+            href={ROUTES.PROFILE(author._id)}
+            textStyles="body-medium text-dark400_light700"
+            isAuthor
+          />
+        ) : (
+          <Link
+            href={ROUTES.PROFILE(author._id)}
+            className="flex items-center gap-2"
+          >
+            {/* Initials avatar */}
+            <div
+              className="flex size-5 items-center justify-center 
                       rounded-full bg-primary-500 text-xs 
-                      font-bold text-white">
-        {getInitials(author.name)}
-      </div>
-      <span className="body-medium text-dark400_light700">
-        {author.name}
-        <span className="small-regular ml-1">
-          · asked {getTimeStamp(createdAt)}
-        </span>
-      </span>
-    </Link>
-  )}
+                      font-bold text-white"
+            >
+              {getInitials(author.name)}
+            </div>
+            <span className="body-medium text-dark400_light700 flex items-center gap-1">
+              {author.name}
+              <span className="small-regular ml-1">
+                . asked {getTimeStamp(createdAt)}
+              </span>
+            </span>
+          </Link>
+        )}
         {/* {author?.image ? (
           <Metrics
             imgUrl={author.image}
