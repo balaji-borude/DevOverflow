@@ -1,5 +1,5 @@
 import { z } from "zod";
-import Answer from '../database/answers.model';
+import Answer from "../database/answers.model";
 
 // signin Schema  of Form
 export const SignInSchema = z.object({
@@ -49,7 +49,7 @@ export const SignUpSchema = z.object({
     }),
 });
 
-// Create Question Schema Validation 
+// Create Question Schema Validation
 export const AskQuestionSchema = z.object({
   title: z
     .string()
@@ -69,13 +69,13 @@ export const AskQuestionSchema = z.object({
 
 // edit question schema
 export const EditQuestionSchema = AskQuestionSchema.extend({
-  questionId:z.string().min(1,{message:"QuestionId is Required"})
+  questionId: z.string().min(1, { message: "QuestionId is Required" }),
 });
 
-// get question schema 
+// get question schema
 export const GetQuestionSchema = z.object({
-  questionId:z.string().min(1,{message:"Question Id is required "})
-})
+  questionId: z.string().min(1, { message: "Question Id is required " }),
+});
 
 // Frontend validation for the users
 export const UserSchema = z.object({
@@ -143,39 +143,45 @@ export const SignInWithOAuthSchema = z.object({
   }),
 });
 
-
-
 // validation for the search params on the home page (search bar and display all the questions)
 export const PaginatedSearchParamsSchema = z.object({
-  page:z.number().int().positive().default(1),
-  pageSize:z.number().int().positive().default(10),
-  query:z.string().optional(),
-  filter:z.string().optional(),
-  sort:z.string().optional(),
+  page: z.number().int().positive().default(1),
+  pageSize: z.number().int().positive().default(10),
+  query: z.string().optional(),
+  filter: z.string().optional(),
+  sort: z.string().optional(),
 });
 
 export const GetTagQuestionSchema = PaginatedSearchParamsSchema.extend({
-  tagId:z.string().min(1,{message:"TagId is required"})
+  tagId: z.string().min(1, { message: "TagId is required" }),
 });
-
 
 //validation for the increment question views
 export const IncrementViewsSchema = z.object({
-  questionId:z.string().min(1,{message:"Question Id is required "})
-})
-
-
-
-export const AnswerSchema = z.object({
-  content:z.string().min(50,{message:"Answer has to more than 50 characters"}),
+  questionId: z.string().min(1, { message: "Question Id is required " }),
 });
 
+export const AnswerSchema = z.object({
+  content: z
+    .string()
+    .min(50, { message: "Answer has to more than 50 characters" }),
+});
 
 export const AnswerServerSchema = AnswerSchema.extend({
-  questionId:z.string().min(1,{message:"Question Id is required "})
-
+  questionId: z.string().min(1, { message: "Question Id is required " }),
 });
 
 export const GetAnswersSchema = PaginatedSearchParamsSchema.extend({
-  questionId:z.string().min(1,{message:"Question Id is required "})  
-})
+  questionId: z.string().min(1, { message: "Question Id is required " }),
+});
+
+// validation for AI Answers
+export const AIAnswerSchema = z.object({
+  question: z
+    .string()
+    .min(5, { message: "Question is Required" })
+    .max(130, { message: "Question Cannot exceed 130 Character" }),
+  content: z
+    .string()
+    .min(10, { message: "Answers has to more than 10 characters" }),
+});
