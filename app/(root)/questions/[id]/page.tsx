@@ -13,6 +13,7 @@ import { redirect } from "next/navigation";
 import View from "../View";
 import AnswerForm from "@/components/forms/AnswerForm";
 import { getAnswers } from "@/lib/actions/answer.action";
+import AllAnswers from "@/components/answers/AllAnswers";
 
 
 const QuestionDetails = async ({ params }: RouteParams) => {
@@ -116,11 +117,20 @@ const QuestionDetails = async ({ params }: RouteParams) => {
           />
         ))}
       </div>
-
+        
       {/* section for answer form */}
       <section className="my-5">
 
       <AnswerForm questionId={question._id} />
+      </section>
+
+      {/* Display all the answers  */}
+      <section className="my-5">
+        <AllAnswers data={answersResult?.Answers} 
+          success={areAnswersLoaded}
+          error={answersError}
+          totalAnswers={answersResult?.totalAnswers || 0}
+        />
       </section>
     </>
   );

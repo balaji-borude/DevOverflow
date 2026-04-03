@@ -54,9 +54,12 @@ export interface PaginatedSearchParams {
   sort?: string;
 };
 
-interface Answers{
-  _id:string;
-  author:string;
-  content:string;
-  createdAt:Date;
+export interface Answers {
+  _id: string;
+  author: Author;
+  content: string;
+  createdAt: Date | string;
+  question?: string;
+  upvotes?: number;
+  downvotes?: number;
 }

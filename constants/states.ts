@@ -1,4 +1,5 @@
 import ROUTES from "./route";
+import Home from '../app/(root)/page';
 
 export const  DEFAULT_EMPTY = {
     title:"NO data found",
@@ -17,6 +18,8 @@ export const  DEFAULT_ERROR = {
         href:ROUTES.HOME,
     }
 };
+
+
 
 export const EMPTY_QUESTIONS = {
     title:"Ahh! No Questions Found",
@@ -43,5 +46,15 @@ export const EMPTY_COLLECTION = {
         text:'Add a Collection',
         href:ROUTES.COLLECTION,
     }
-}
+};
 
+
+// Amswerrrs
+export const EMPTY_ANSWERS = {
+    title:"No Answers Found",
+    message:"The Board is empty . Make it rain with your brilliant answers ",
+    // button:{
+    //     text:'Answer',
+    //     href:ROUTES.HOME,
+    // }
+};
