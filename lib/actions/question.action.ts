@@ -6,7 +6,6 @@ import {
   PaginatedSearchParams,
   Questions,
 } from "@/types/global";
-// import mongoose from "mongoose";
 import mongoose from "mongoose";
 import action from "../handlers/action"; //this is the server action handler used in all the server actions
 import {
@@ -47,8 +46,6 @@ export async function createQuestion(
 
   const { title, content, tags } = validationResult.params!;
   const userId = validationResult?.session?.user?.id;
-
-  // use mongoose trancsation to create question
   const session = await mongoose.startSession();
 
   session.startTransaction();
@@ -111,7 +108,7 @@ export async function createQuestion(
   }
 }
 
-// edit question
+// Edit question 
 export async function editQuestion(
   params: CreateQuestionParams & { questionId: string },
 ): Promise<ActionResponse<IQuestion>> {
