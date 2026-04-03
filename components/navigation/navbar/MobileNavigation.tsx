@@ -51,53 +51,58 @@ const MobileNavigation = async () => {
           </Link>
 
           <div className="no-scrollbar flex h-[calc(100vh-80px)] flex-col justify-between overflow-y-auto">
-            <SheetClose asChild>
-              <section className="flex h-full flex-col gap-6  ">
-                <NavLinks isMobileNav={true} />
-              </section>
-            </SheetClose>
+            {/* ✅ Fix 1: Remove asChild from SheetClose wrapping section */}
+<SheetClose>
+  <section className="flex h-full flex-col gap-6">
+    <NavLinks isMobileNav={true} />
+  </section>
+</SheetClose>
 
-            {/* SignIn Links */}
-            <div className="flex flex-col gap-3">
-              {userId ? (
-                <SheetClose asChild>
-                  <form
-                    action={async () => {
-                      "use server";
-                      await signOut();
-                    }}
-                  >
-            <Button
-              type="submit"
-              className="base-medium w-fit bg-transparent p-3 hover:
-              cursor-pointer text-dark300_light900   border-dark300_light900 hover:bg-dark300_light900 hover:text-light-900 transition-colors duration-200"
-            >
-              <LogOut className="size-5 text-black dark:text-white " />
-              <span className="max-lg:hidden text-dark300_light900 base-medium ">
-                Logout
-              </span>
-            </Button>
-                  </form>
-                </SheetClose>
-              ) : (
-                <>
-                  <SheetClose asChild>
-                    <Link href={ROUTES.SIGN_IN}>
-                      <Button className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 ">
-                        <span className="primary-text-gradient">Log In</span>
-                      </Button>
-                    </Link>
-                  </SheetClose>
+{/* ✅ Fix 2: SheetClose asChild → Link directly (no Button in between) */}
+<div className="flex flex-col gap-3">
+  {userId ? (
+    <form
+      action={async () => {
+        "use server";
+        await signOut();
+      }}
+    >
+      <Button
+        type="submit"
+        className="base-medium w-fit bg-transparent p-3 hover:cursor-pointer 
+          text-dark300_light900 border-dark300_light900 hover:bg-dark300_light900 
+          hover:text-light-900 transition-colors duration-200"
+      >
+        <LogOut className="size-5 text-black dark:text-white" />
+        <span className="max-lg:hidden text-dark300_light900 base-medium">
+          Logout
+        </span>
+      </Button>
+    </form>
+  ) : (
+    <>
+      {/* ✅ SheetClose asChild → Link only (single Slot, no nested Slot) */}
+      <SheetClose asChild>
+        <Link
+          href={ROUTES.SIGN_IN}
+          className="small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 flex items-center justify-center"
+        >
+          <span className="primary-text-gradient">Log In</span>
+        </Link>
+      </SheetClose>
 
-                  <SheetClose asChild>
-                    <Link href={ROUTES.SIGN_UP}>
-                      <Button className="small-medium light-border-2 btn-tertiary w-full rounded-lg  text-dark400_light900 min-h-[41px] border px-4 py-3 mb-2 shadow-none">
-                        Sign Up
-                      </Button>
-                    </Link>
-                  </SheetClose>
-                </>
-              )}
+      <SheetClose asChild>
+        <Link
+          href={ROUTES.SIGN_UP}
+          className="small-medium light-border-2 btn-tertiary w-full rounded-lg 
+            text-dark400_light900 min-h-[41px] border px-4 py-3 mb-2 shadow-none flex items-center justify-center"
+        >
+          Sign Up
+        </Link>
+      </SheetClose>
+    </>
+  )}
+
             </div>
           </div>
         </SheetContent>

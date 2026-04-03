@@ -161,7 +161,7 @@ const NavLinks = ({
         );
 
         return isMobileNav ? (
-          <SheetClose asChild key={route}>  {/* ✅ use route, not item.route */}
+          <SheetClose asChild key={route}>
             {LinkComponent}
           </SheetClose>
         ) : (
