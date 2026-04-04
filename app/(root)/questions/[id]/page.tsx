@@ -14,7 +14,7 @@ import View from "../View";
 import AnswerForm from "@/components/forms/AnswerForm";
 import { getAnswers } from "@/lib/actions/answer.action";
 import AllAnswers from "@/components/answers/AllAnswers";
-
+import Votes from "@/components/votes/Votes";
 
 const QuestionDetails = async ({ params }: RouteParams) => {
   //   He Params ahe
@@ -37,9 +37,9 @@ const QuestionDetails = async ({ params }: RouteParams) => {
 
   // console.log("All the anwers --->", answersResult);
 
- // console.log("Printing the questions data----->",question);
+ console.log("Printing the questions data----->",question);
 
-  const { author, createdAt, answers, views, tags, title, content } = question;
+  const { author, createdAt, answers, views, tags, title, content,upvotes,downvotes } = question;
 
   return (
     <>
@@ -50,7 +50,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
       {/* <div>  QuestionDetails page {id}</div> */}
       <div className=" flex-start w-full flex-col">
         <div className="flex w-full flex-col-reverse justify-between">
-          <div className="flex items-center justify-start gap-1">
+          <div className=" w-full  flex items-center  gap-1">
             <div className=" flex space-x-2 w-fit rounded-full border-2 border-light400_dark300 px-3 py-1.5 text-sm">
               <UserAvatar
                 id={author._id}
@@ -59,15 +59,16 @@ const QuestionDetails = async ({ params }: RouteParams) => {
                 fallbackClassName="text-[10px]"
               />
 
-              <Link href={ROUTES.PROFILE(author._id)}>
-                <p className="paragraph-semibold text-dark300_light700 ">
+              <Link href={ROUTES.PROFILE(author._id)} className="w-full flex ">
+                <p className=" paragraph-semibold text-dark300_light700  ">
                   {author.name}
                 </p>
               </Link>
             </div>
 
-            <div className="flex justify-end">
-              <p>Votes</p>
+            <div className=" w-full  flex justify-end">
+              {/* <p>Votes</p> */}
+              <Votes upvotes={question.upvotes} hasUpvoted={true} downvotes={question.downvotes} hasDownvoted={false} />
             </div>
           </div>
         </div>

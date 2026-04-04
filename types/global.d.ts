@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import Answer from '@/database/answers.model';
-import { auth } from '@/auth';
+
 
 export interface Tags {
   _id: string;
@@ -22,6 +21,7 @@ export interface Questions {
   author: Author;
   createdAt: Date;
   upvotes: number;
+  downvotes: number;
   answers: number;
   views: number;
 }
