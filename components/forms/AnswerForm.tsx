@@ -1,16 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import {
-  useForm,
-  SubmitHandler,
-  FieldValues,
-  Path,
-  DefaultValues,
-} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 
@@ -20,7 +13,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 
@@ -34,25 +26,131 @@ import { ReloadIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { createAnswer } from "@/lib/actions/answer.action";
 import ROUTES from "@/constants/route";
-import { start } from "repl";
+import { useSession } from "next-auth/react";
+import { api } from "@/lib/api";
 
 // type for action in ONclick presss //
-type ActionResponse = {
-  success: boolean;
-  status?: number;
-  error?: {
-    message: string;
-  };
-};
+// type ActionResponse = {
+//   success: boolean;
+//   status?: number;
+//   error?: {
+//     message: string;
+//   };
+// };
+
+interface AnswerFormProps {
+  questionId: string;
+  questionTitle: string;
+  questionContent: string;
+}
 
 const Editor = dynamic(() => import("../editor"), { ssr: false });
 
-const AnswerForm = ({questionId}:{questionId:string}) => {
+const SUPPORTED_CODE_LANGUAGES = new Set([
+  "",
+  "bash",
+  "c",
+  "cpp",
+  "css",
+  "go",
+  "html",
+  "java",
+  "js",
+  "json",
+  "jsx",
+  "php",
+  "python",
+  "ruby",
+  "scss",
+  "ts",
+  "tsx",
+]);
 
-    const[isAnswering,startAnsweringTransition] = useTransition()
+const normalizeCodeFenceLanguage = (language: string) => {
+  const normalizedLanguage = language.trim().toLowerCase();
 
- // const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isAiSubmiting, setisAiSubmiting] = useState(false);
+  if (
+    normalizedLanguage === "" ||
+    normalizedLanguage === "n/a" ||
+    normalizedLanguage === "na" ||
+    normalizedLanguage === "none" ||
+    normalizedLanguage === "plaintext" ||
+    normalizedLanguage === "text" ||
+    normalizedLanguage === "txt"
+  ) {
+    return "";
+  }
+
+  if (normalizedLanguage === "javascript") return "js";
+  if (normalizedLanguage === "typescript") return "ts";
+  if (normalizedLanguage === "py") return "python";
+  if (normalizedLanguage === "sh" || normalizedLanguage === "shell")
+    return "bash";
+
+  return SUPPORTED_CODE_LANGUAGES.has(normalizedLanguage)
+    ? normalizedLanguage
+    : "";
+};
+
+const sanitizeAiMarkdown = (markdown: string) => {
+  const normalizedMarkdown = markdown
+    .replace(/\r\n/g, "\n")
+    .replace(/<br\s*\/?>/gi, "\n");
+
+  const lines = normalizedMarkdown.split("\n");
+  const sanitizedLines: string[] = [];
+  let activeFenceMarker: string | null = null;
+
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+
+    if (!activeFenceMarker) {
+      const openingFenceMatch = trimmedLine.match(/^(```+|~~~+)\s*(.*)$/);
+
+      if (openingFenceMatch) {
+        const [, marker, rawInfo = ""] = openingFenceMatch;
+        const rawLanguage = rawInfo.split(/\s+/)[0] ?? "";
+        const normalizedLanguage = normalizeCodeFenceLanguage(rawLanguage);
+
+        activeFenceMarker = marker[0];
+        sanitizedLines.push(
+          normalizedLanguage ? `\`\`\`${normalizedLanguage}` : "```",
+        );
+        continue;
+      }
+    } else {
+      const closingFencePattern = new RegExp(`^${activeFenceMarker}{3,}\\s*$`);
+
+      if (closingFencePattern.test(trimmedLine)) {
+        sanitizedLines.push("```");
+        activeFenceMarker = null;
+        continue;
+      }
+    }
+
+    sanitizedLines.push(line);
+  }
+
+  if (activeFenceMarker) {
+    sanitizedLines.push("```");
+  }
+
+  return sanitizedLines.join("\n").trim();
+};
+
+const stripCodeFenceLanguages = (markdown: string) =>
+  markdown.replace(/^```[^\n]*$/gm, "```");
+
+const AnswerForm = ({
+  questionId,
+  questionTitle,
+  questionContent,
+}: AnswerFormProps) => {
+  const [isAnswering, startAnsweringTransition] = useTransition();
+  const [isAiSubmiting, setIsAiSubmiting] = useState(false);
+
+  // only authenticated user can answer
+  const session = useSession();
 
   const router = useRouter();
 
@@ -65,20 +163,72 @@ const AnswerForm = ({questionId}:{questionId:string}) => {
 
   // form handler
   const handleSubmit = async (values: z.infer<typeof AnswerSchema>) => {
-    startAnsweringTransition(async()=>{
- const result = await createAnswer({questionId,content:values.content});
+    startAnsweringTransition(async () => {
+      const result = await createAnswer({
+        questionId,
+        content: values.content,
+      });
 
-    if (result.success) {
-      toast.success("Answer Posted successfully");
-      startAnsweringTransition(()=>{
-        router.push(ROUTES.QUESTION(questionId));
-      })
-    }else{
+      if (result.success) {
+        form.reset();
+        toast.success("Answer Posted successfully");
+
+        // ai answer changes
+        if (editorRef.current) {
+          editorRef.current.setMarkdown("");
+        }
+
+        startAnsweringTransition(() => {
+          router.push(ROUTES.QUESTION(questionId));
+        });
+      } else {
         toast.error(result?.error?.message || "Failed to post answer");
-    }
-    })
+      }
+    });
+  };
 
-   
+  const generateAiAnswer = async () => {
+    if (session.status !== "authenticated") {
+      return toast.error("Please login to generate AI Answers");
+    }
+    setIsAiSubmiting(true);
+
+    try {
+      const result = await api.ai.getAnswer({
+        question: questionTitle,
+        content: questionContent,
+      });
+
+      if (!result.success || !result.data) {
+        toast.error(result.error?.message || "Failed to generate AI Answers");
+        return;
+      }
+
+      const formattedAnswers = sanitizeAiMarkdown(result.data);
+
+      if (editorRef.current) {
+        try {
+          editorRef.current.setMarkdown(formattedAnswers);
+          form.setValue("content", formattedAnswers);
+        } catch {
+          const fallbackMarkdown = stripCodeFenceLanguages(formattedAnswers);
+          editorRef.current.setMarkdown(fallbackMarkdown);
+          form.setValue("content", fallbackMarkdown);
+        }
+
+        form.trigger("content");
+      }
+
+      toast.success("AI Answer Generated successfully");
+    } catch (error) {
+      return toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to generate AI Answers",
+      );
+    } finally {
+      setIsAiSubmiting(false);
+    }
   };
 
   const editorRef = useRef<MDXEditorMethods>(null);
@@ -92,6 +242,7 @@ const AnswerForm = ({questionId}:{questionId:string}) => {
         <Button
           className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
           disabled={isAnswering}
+          onClick={generateAiAnswer}
         >
           {isAiSubmiting ? (
             <>
@@ -144,7 +295,7 @@ const AnswerForm = ({questionId}:{questionId:string}) => {
               type="submit"
               className="primary-gradient w-fit rounded-xs p-1 hover:cursor-pointer"
             >
-              {isAnswering   ? (
+              {isAnswering ? (
                 <>
                   <ReloadIcon className="mr-2 size-4 animate-spin" />
                   Posting...

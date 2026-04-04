@@ -1,5 +1,4 @@
 import ROUTES from "./route";
-import Home from '../app/(root)/page';
 
 export const  DEFAULT_EMPTY = {
     title:"NO data found",

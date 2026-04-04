@@ -4,7 +4,6 @@ import { IAccount } from "@/database/accout.model";
 import { fetchHandler } from "./handlers/fetch";
 import { IUser } from "@/database/user.model";
 import { SigninWithOAuthParams } from "../types/action";
-import { APIResponse } from '../types/global';
 // Base URL for the API
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:3000/api';
 
@@ -86,6 +85,7 @@ export const api = {
     },
   },
 
+  //AI related API calls
   ai: {
     getAnswer: ({
       question,
@@ -94,7 +94,7 @@ export const api = {
       question: string;
       content: string;
     }) =>
-      fetchHandler(`${API_BASE_URL}/ai/answers`, {
+      fetchHandler<string>(`${API_BASE_URL}/ai/answers`, {
         method: "POST",
         body: JSON.stringify({ question, content }),
       }),

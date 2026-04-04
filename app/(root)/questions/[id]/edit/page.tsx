@@ -5,6 +5,8 @@ import { getQuestion } from "@/lib/actions/question.action";
 import ROUTES from "@/constants/route";
 import type { RouteParams } from "@/types/action";
 
+console.log("Going to the Edit Question ---");
+
 const EditQuestion = async ({ params }: RouteParams) => {
   const { id } = await params;
   if (!id) return notFound();
@@ -15,10 +17,11 @@ const EditQuestion = async ({ params }: RouteParams) => {
   }
   const { data: question, success } = await getQuestion({ questionId: id });
 
-  if (!success) return notFound();
+  if (!success || !question) return notFound();
 
-  if (question?.author.toString() !== session?.user?.id)
-    redirect(ROUTES.QUESTION(id));
+  if (question.author._id.toString() !== session.user?.id) {
+    return redirect(ROUTES.QUESTION(id));
+  }
 
   return (
     <main>

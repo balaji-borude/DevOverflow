@@ -35,7 +35,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
     filter: "latest",
   });
 
-  console.log("All the anwers --->", answersResult);
+  // console.log("All the anwers --->", answersResult);
 
  // console.log("Printing the questions data----->",question);
 
@@ -121,7 +121,9 @@ const QuestionDetails = async ({ params }: RouteParams) => {
       {/* section for answer form */}
       <section className="my-5">
 
-      <AnswerForm questionId={question._id} />
+
+      {/* Write your answer here */}
+      <AnswerForm questionId={question._id} questionTitle={question.title}  questionContent ={question.content}/>
       </section>
 
       {/* Display all the answers  */}
