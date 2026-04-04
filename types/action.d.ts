@@ -44,8 +44,10 @@ export interface GetQuestionParams {
 }
 
 // get tag question
-export interface GetTagQuestionParams
-  extends Omit<PaginatedSearchParams, "filter"> {
+export interface GetTagQuestionParams extends Omit<
+  PaginatedSearchParams,
+  "filter"
+> {
   tagId: string;
 }
 
@@ -54,10 +56,19 @@ export interface IncrementViewsParams {
 }
 
 interface CreateAnswerParams {
-    questionId: string;
-    content: string;
-};
+  questionId: string;
+  content: string;
+}
 
 interface GetAnswersParams extends PaginatedSearchParams {
   questionId: string;
+}
+interface CreateVoteParams {
+  targetId: string;
+  targetType: "question" | "answer";
+  voteType: "upvote" | "downvote";
+}
+
+interface UpdateVoteCountParams extends CreateVoteParams {
+  change: 1 | -1;
 }

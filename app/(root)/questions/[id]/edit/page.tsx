@@ -5,7 +5,7 @@ import { getQuestion } from "@/lib/actions/question.action";
 import ROUTES from "@/constants/route";
 import type { RouteParams } from "@/types/action";
 
-console.log("Going to the Edit Question ---");
+//console.log("Going to the Edit Question ---");
 
 const EditQuestion = async ({ params }: RouteParams) => {
   const { id } = await params;

@@ -31,7 +31,7 @@ import ROUTES from "@/constants/route";
 import { Questions } from "@/types/global";
 import { type IQuestionDoc } from "@/database/question.model";
 
-  const Editor = dynamic(() => import("../editor"), { ssr: false });
+const Editor = dynamic(() => import("../editor"), { ssr: false });
 
 interface Params {
   question?: Questions;
@@ -41,7 +41,6 @@ const QuestionForms = ({ question, isEdit = false }: Params) => {
   const router = useRouter();
 
   const [tagInput, setTagInput] = useState("");
-
 
   // form validation import from ./validations.ts file
   const form = useForm<{
@@ -56,11 +55,11 @@ const QuestionForms = ({ question, isEdit = false }: Params) => {
     //   tags: question?.tags.map((tag) => tag.name) || [],
     // },
     // ✅ Fix - deduplicate with Set
-defaultValues: {
-  title: question?.title || "",
-  content: question?.content || "",
-  tags: [...new Set(question?.tags.map((tag) => tag.name) || [])],
-},
+    defaultValues: {
+      title: question?.title || "",
+      content: question?.content || "",
+      tags: [...new Set(question?.tags.map((tag) => tag.name) || [])],
+    },
   });
 
   // tags
@@ -126,7 +125,12 @@ defaultValues: {
       if (result.success) {
         toast.success("Question updated successfully");
         // if (result.data) router.push(ROUTES.QUESTION(result.data._id));
-      if (result.data) router.push(ROUTES.QUESTION((result.data as unknown as IQuestionDoc)._id.toString()));
+        if (result.data)
+          router.push(
+            ROUTES.QUESTION(
+              (result.data as unknown as IQuestionDoc)._id.toString(),
+            ),
+          );
       } else {
         toast.error(result?.error?.message || "Failed to update question");
       }

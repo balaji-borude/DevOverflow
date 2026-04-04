@@ -1,9 +1,8 @@
 "use client";
 import { formatNumber } from "@/lib/utils";
-import { set } from "mongoose";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { use, useState } from "react";
+import {  useState } from "react";
 import { toast } from "sonner";
 interface Props {
   upvotes: number;
@@ -15,28 +14,27 @@ const Votes = ({ upvotes, hasUpvoted, downvotes, hasDownvoted }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const session = useSession();
-  const userId=session.data?.user?.id;
+  const userId = session.data?.user?.id;
 
   const handleVote = async (voteType: "upvote" | "downvote") => {
-    if(!userId){
-
-        toast.warning("Please login to vote");
-        return;
-    };
-setIsLoading(true);
-    try {
-        const successMessage = voteType === "upvote" ? `Upvote ${!hasUpvoted ? 'Added' : 'Removed'} succeddfully` : `Downvote ${!hasDownvoted ? 'Added' : 'Removed'} succeddfully`;
-
-        toast.success(successMessage);
-        
-    } catch (error) {
-        toast.error("Failed to vote");
-    }finally{
-        setIsLoading(false);
+    if (!userId) {
+      toast.warning("Please login to vote");
+      return;
     }
+    setIsLoading(true);
+    try {
+      const successMessage =
+        voteType === "upvote"
+          ? `Upvote ${!hasUpvoted ? "Added" : "Removed"} succeddfully`
+          : `Downvote ${!hasDownvoted ? "Added" : "Removed"} succeddfully`;
 
+      toast.success(successMessage);
+    } catch (error) {
+      toast.error("Failed to vote");
+    } finally {
+      setIsLoading(false);
+    }
   };
-
 
   return (
     <div className="flex center gap-2.5">
