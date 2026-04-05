@@ -98,59 +98,59 @@ const QuestionDetails = async ({ params }: RouteParams) => {
         </h2>
       </div> */}
 
-<div className="flex-start w-full flex-col">
-  <div className="flex w-full flex-col-reverse justify-between">
-    <div className="w-full flex items-center gap-1">
+      {/* H.W --> PENDING ==>  Hey change here insted of Metrics you can use the UserAvatar component and its fallback class   */}
 
-      {/* Author pill with conditional rendering */}
-      <div className="flex items-center gap-2 shrink-0 rounded-full border-2 border-light400_dark300 px-3 py-1.5">
-        {author?.image ? (
-          <Metrics
-            imgUrl={author.image}
-            alt={author.name}
-            value={author.name}
-            title={`. asked ${getTimeStamp(new Date(createdAt))}`}
-            href={ROUTES.PROFILE(author._id)}
-            textStyles="body-medium text-dark400_light700 whitespace-nowrap"
-            isAuthor
-          />
-        ) : (
-          <>
-            <UserAvatar
-              id={author._id}
-              name={author?.name}
-              className="size-[22px]"
-              fallbackClassName="text-[10px]"
-            />
-            <Link href={ROUTES.PROFILE(author._id)}>
-              <p className="paragraph-semibold text-dark300_light700 whitespace-nowrap">
-                {author.name}
-              </p>
-            </Link>
-          </>
-        )}
+      <div className="flex-start w-full flex-col">
+        <div className="flex w-full flex-col-reverse justify-between">
+          <div className="w-full flex items-center gap-1">
+            {/* Author pill with conditional rendering */}
+            <div className="flex items-center gap-2 shrink-0 rounded-full border-2 border-light400_dark300 px-3 py-1.5">
+              {author?.image ? (
+                <Metrics
+                  imgUrl={author.image}
+                  alt={author.name}
+                  value={author.name}
+                  title={`. asked ${getTimeStamp(new Date(createdAt))}`}
+                  href={ROUTES.PROFILE(author._id)}
+                  textStyles="body-medium text-dark400_light700 whitespace-nowrap"
+                  isAuthor
+                />
+              ) : (
+                <>
+                  <UserAvatar
+                    id={author._id}
+                    name={author?.name}
+                    className="size-[22px]"
+                    fallbackClassName="text-[10px]"
+                  />
+                  <Link href={ROUTES.PROFILE(author._id)}>
+                    <p className="paragraph-semibold text-dark300_light700 whitespace-nowrap">
+                      {author.name}
+                    </p>
+                  </Link>
+                </>
+              )}
+            </div>
+
+            {/* Votes on the right */}
+            <div className="w-full flex justify-end">
+              <Suspense fallback={<div>Loading...</div>}>
+                <Votes
+                  upvotes={question.upvotes}
+                  downvotes={question.downvotes}
+                  hasVotedPromise={hasVotedPromise}
+                  targetId={question._id}
+                  targetType="question"
+                />
+              </Suspense>
+            </div>
+          </div>
+        </div>
+
+        <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full">
+          {title}
+        </h2>
       </div>
-
-      {/* Votes on the right */}
-      <div className="w-full flex justify-end">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Votes
-            upvotes={question.upvotes}
-            downvotes={question.downvotes}
-            hasVotedPromise={hasVotedPromise}
-            targetId={question._id}
-            targetType="question"
-          />
-        </Suspense>
-      </div>
-
-    </div>
-  </div>
-
-  <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full">
-    {title}
-  </h2>
-</div>
 
       <div className="mb-8 mt-5 flex flex-wrap gap-4">
         <Metrics
