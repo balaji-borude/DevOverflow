@@ -5,8 +5,13 @@ import { ActionResponse, ErrorResponse } from "@/types/global";
 
 import action from "../handlers/action";
 import handleError from "../handlers/errors";
-import { CreateVoteParams, UpdateVoteCountParams } from "@/types/action";
-import { updateVoteCountSchema } from "../validations";
+import {
+  CreateVoteParams,
+  HasVotedParams,
+  HasVotedResponse,
+  UpdateVoteCountParams,
+} from "@/types/action";
+import { HasVotedSchema, updateVoteCountSchema } from "../validations";
 import Vote from "@/database/vote.model";
 import Question from "@/database/question.model";
 import Answer from "@/database/answers.model";
@@ -82,37 +87,38 @@ export async function createVote(
     }).session;
 
     if (!existingVote) {
+      if (existingVote.voteType === voteType) {
+        //if the user has already voted on the the same vote type --> remove the vote
+        await Vote.deleteOne({
+          _id: existingVote._id,
+        }).session(session);
 
-        if (existingVote.voteType === voteType) {
-          //if the user has already voted on the the same vote type --> remove the vote
-          await Vote.deleteOne({
-            _id: existingVote._id,
-          }).session(session);
-    
-          // if we delete the vote --> we need to update the vote count
-          await updateVoteCount(
-            { targetId, targetType, voteType, change: -1 },
-            session,
-          );
-        } else {
-          // if the user has not voted on the same vote type --> add the vote\
-          await Vote.findByIdAndUpdate(
-            existingVote._id,
-            { voteType },
-            { new: true, session },
-          );
-          // if we add the vote --> we need to update the vote count
-          await updateVoteCount(
-            { targetId, targetType, voteType, change: 1 },
-            session,
-          );
-        }
-    }else{
-        await Vote.create([{targetId,targetType,voteType,change:1}],{session});
+        // if we delete the vote --> we need to update the vote count
+        await updateVoteCount(
+          { targetId, targetType, voteType, change: -1 },
+          session,
+        );
+      } else {
+        // if the user has not voted on the same vote type --> add the vote\
+        await Vote.findByIdAndUpdate(
+          existingVote._id,
+          { voteType },
+          { new: true, session },
+        );
+        // if we add the vote --> we need to update the vote count
         await updateVoteCount(
           { targetId, targetType, voteType, change: 1 },
           session,
         );
+      }
+    } else {
+      await Vote.create([{ targetId, targetType, voteType, change: 1 }], {
+        session,
+      });
+      await updateVoteCount(
+        { targetId, targetType, voteType, change: 1 },
+        session,
+      );
     }
 
     await session.commitTransaction();
@@ -121,6 +127,49 @@ export async function createVote(
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+//
+export async function hasVoted(
+  params: HasVotedParams,
+): Promise<ActionResponse<HasVotedResponse>> {
+  const validationResult = await action({
+    params,
+    schema: HasVotedSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { targetId, targetType } = validationResult.params!;
+  const userId = validationResult?.session?.user?.id;
+  if (!userId) {
+    return handleError(new Error("Unauthorized")) as ErrorResponse;
+  }
+
+  try {
+    const vote = await Vote.findOne({
+      author: userId,
+      actionId: targetId,
+      actionType: targetType,
+    });
+
+    if (!vote) {
+      return {
+        success: false,
+        data: { hasUpvoted: false, hasDownvoted: false },
+      };
+    }
+    return {
+      success: true,
+      data: { hasUpvoted: vote.voteType === "upvote", hasDownvoted: vote.voteType === "downvote" },
+    };
+
+  } catch (error) {
     return handleError(error) as ErrorResponse;
   }
 }
