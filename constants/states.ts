@@ -57,3 +57,10 @@ export const EMPTY_ANSWERS = {
     //     href:ROUTES.HOME,
     // }
 };
+
+
+export const EMPTY_USERS = {
+    title:"No Users Found",
+    message:"The User is empty it's waiting for you the waiting for you to fill it",
+
+}

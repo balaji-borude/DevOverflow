@@ -65,7 +65,7 @@ export interface Answers {
 };
 
 
-interface User{
+export interface User{
   _id: string;
   name: string;
   username: string;
