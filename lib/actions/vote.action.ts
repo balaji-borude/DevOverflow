@@ -2,6 +2,7 @@
 
 import mongoose, { ClientSession } from "mongoose";
 import { ActionResponse, ErrorResponse } from "@/types/global";
+import { revalidatePath } from "next/cache";
 
 import action from "../handlers/action";
 import handleError from "../handlers/errors";
@@ -11,10 +12,15 @@ import {
   HasVotedResponse,
   UpdateVoteCountParams,
 } from "@/types/action";
-import { HasVotedSchema, updateVoteCountSchema } from "../validations";
+import {
+  CreateVoteSchema,
+  HasVotedSchema,
+  updateVoteCountSchema,
+} from "../validations";
 import Vote from "@/database/vote.model";
 import Question from "@/database/question.model";
 import Answer from "@/database/answers.model";
+import ROUTES from "@/constants/route";
 
 // update vote
 export async function updateVoteCount(
@@ -38,7 +44,7 @@ export async function updateVoteCount(
   const VoteField = voteType === "upvote" ? "upvotes" : "downvotes";
 
   try {
-    const result = await model.updateByIdAndUpdate(
+    const result = await model.findByIdAndUpdate(
       targetId,
       { $inc: { [VoteField]: change } },
       { new: true, session },
@@ -60,7 +66,7 @@ export async function createVote(
 ): Promise<ActionResponse> {
   const validationResult = await action({
     params,
-    schema: updateVoteCountSchema,
+    schema: CreateVoteSchema, // ✅ Fix 1: was updateVoteCountSchema
     authorize: true,
   });
 
@@ -69,7 +75,6 @@ export async function createVote(
   }
 
   const { targetId, targetType, voteType } = validationResult.params!;
-
   const userId = validationResult?.session?.user?.id;
 
   if (!userId) {
@@ -82,39 +87,43 @@ export async function createVote(
   try {
     const existingVote = await Vote.findOne({
       author: userId,
-      actionId: targetId,
-      actionType: targetType,
-    }).session;
+      id: targetId,
+      type: targetType,
+    }).session(session);
 
-    if (!existingVote) {
+    if (existingVote) {
+      // ✅ Fix 2: was !existingVote
       if (existingVote.voteType === voteType) {
-        //if the user has already voted on the the same vote type --> remove the vote
-        await Vote.deleteOne({
-          _id: existingVote._id,
-        }).session(session);
-
-        // if we delete the vote --> we need to update the vote count
+        // Same vote type → user is toggling off, remove the vote
+        await Vote.deleteOne({ _id: existingVote._id }).session(session);
         await updateVoteCount(
           { targetId, targetType, voteType, change: -1 },
           session,
         );
       } else {
-        // if the user has not voted on the same vote type --> add the vote\
+        // Different vote type → switch upvote ↔ downvote
         await Vote.findByIdAndUpdate(
           existingVote._id,
           { voteType },
           { new: true, session },
         );
-        // if we add the vote --> we need to update the vote count
+
+          // ✅ Decrement the OLD vote type
+  await updateVoteCount(
+    { targetId, targetType, voteType: existingVote.voteType, change: -1 },
+    session,
+  );
         await updateVoteCount(
           { targetId, targetType, voteType, change: 1 },
           session,
         );
       }
     } else {
-      await Vote.create([{ targetId, targetType, voteType, change: 1 }], {
-        session,
-      });
+      // No existing vote → create a fresh one
+      await Vote.create(
+        [{ author: userId, id: targetId, type: targetType, voteType }],
+        { session },
+      );
       await updateVoteCount(
         { targetId, targetType, voteType, change: 1 },
         session,
@@ -123,7 +132,9 @@ export async function createVote(
 
     await session.commitTransaction();
     session.endSession();
-    return { success: true, data: existingVote };
+
+    revalidatePath(ROUTES.QUESTION(targetId));
+    return { success: true };
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
@@ -131,7 +142,7 @@ export async function createVote(
   }
 }
 
-//
+// check if the user has voted on the question or answer
 export async function hasVoted(
   params: HasVotedParams,
 ): Promise<ActionResponse<HasVotedResponse>> {
@@ -154,8 +165,8 @@ export async function hasVoted(
   try {
     const vote = await Vote.findOne({
       author: userId,
-      actionId: targetId,
-      actionType: targetType,
+      id: targetId,
+      type: targetType,
     });
 
     if (!vote) {
@@ -166,9 +177,11 @@ export async function hasVoted(
     }
     return {
       success: true,
-      data: { hasUpvoted: vote.voteType === "upvote", hasDownvoted: vote.voteType === "downvote" },
+      data: {
+        hasUpvoted: vote.voteType === "upvote",
+        hasDownvoted: vote.voteType === "downvote",
+      },
     };
-
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }

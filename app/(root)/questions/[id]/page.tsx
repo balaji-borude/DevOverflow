@@ -15,38 +15,51 @@ import AnswerForm from "@/components/forms/AnswerForm";
 import { getAnswers } from "@/lib/actions/answer.action";
 import AllAnswers from "@/components/answers/AllAnswers";
 import Votes from "@/components/votes/Votes";
+import { hasVoted } from "@/lib/actions/vote.action";
+import { Suspense } from "react";
 
 const QuestionDetails = async ({ params }: RouteParams) => {
   //   He Params ahe
   const { id } = await params; // question id ghenasathi use hote
-
-  // actual fetch question details from database using question id
-
   const { success, data: question } = await getQuestion({ questionId: id });
 
   if (!success || !question) {
     return redirect("/404");
-  };
-  // questions Answers
-  const {success:areAnswersLoaded,data:answersResult,error:answersError  } = await getAnswers({
+  }
+  // Getting the questions Answers
+  const {
+    success: areAnswersLoaded,
+    data: answersResult,
+    error: answersError,
+  } = await getAnswers({
     questionId: id,
     page: 1,
     pageSize: 10,
     filter: "latest",
   });
 
+  // here we are using --> Use (Hook) of react
+  const hasVotedPromise = hasVoted({ targetId: id, targetType: "question" });
   // console.log("All the anwers --->", answersResult);
 
- console.log("Printing the questions data----->",question);
+  console.log("Printing the questions data----->", question);
 
-  const { author, createdAt, answers, views, tags, title, content,upvotes,downvotes } = question;
+  const {
+    author,
+    createdAt,
+    answers,
+    views,
+    tags,
+    title,
+    content,
+    upvotes,
+    downvotes,
+  } = question;
 
   return (
     <>
+      <View questionId={id} />
 
-      <View questionId={id}/>
-
-      
       {/* <div>  QuestionDetails page {id}</div> */}
       <div className=" flex-start w-full flex-col">
         <div className="flex w-full flex-col-reverse justify-between">
@@ -65,10 +78,19 @@ const QuestionDetails = async ({ params }: RouteParams) => {
                 </p>
               </Link>
             </div>
-
+            {/* Use (Hook) --> is a react API that lets you read the value if a resource like Promise or context */}
             <div className=" w-full  flex justify-end">
-              {/* <p>Votes</p> */}
-              <Votes upvotes={question.upvotes} hasUpvoted={true} downvotes={question.downvotes} hasDownvoted={false} />
+              <Suspense fallback={<div> Loading...</div>}>
+                <Votes
+                  upvotes={question.upvotes}
+                  //hasUpvoted={true}
+                  downvotes={question.downvotes}
+                  //hasDownvoted={false}
+                  hasVotedPromise={hasVotedPromise}
+                  targetId={question._id}
+                  targetType="question"
+                />
+              </Suspense>
             </div>
           </div>
         </div>
@@ -118,18 +140,21 @@ const QuestionDetails = async ({ params }: RouteParams) => {
           />
         ))}
       </div>
-        
+
       {/* section for answer form */}
       <section className="my-5">
-
-
-      {/* Write your answer here */}
-      <AnswerForm questionId={question._id} questionTitle={question.title}  questionContent ={question.content}/>
+        {/* Write your answer here */}
+        <AnswerForm
+          questionId={question._id}
+          questionTitle={question.title}
+          questionContent={question.content}
+        />
       </section>
 
       {/* Display all the answers  */}
       <section className="my-5">
-        <AllAnswers data={answersResult?.Answers} 
+        <AllAnswers
+          data={answersResult?.Answers}
           success={areAnswersLoaded}
           error={answersError}
           totalAnswers={answersResult?.totalAnswers || 0}

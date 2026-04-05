@@ -195,7 +195,7 @@ export const CreateVoteSchema = z.object({
 });
 
 export const updateVoteCountSchema = CreateVoteSchema.extend({
-  change: z.number().int().positive().min(-1).max(1),
+ change: z.number().int().min(-1).max(1),
 });
 
 
