@@ -80,10 +80,13 @@ export async function POST(req: Request) {
     });
 
     // console.log("AI Response -->", text);
-
+    
     return NextResponse.json({ success: true, data: text }, { status: 200 });
   } catch (error) {
     console.error("Error in AI response -->", error);
-    return handleError(error, "api");
+      // ✅ Fix: handleError returns a plain object, wrap it in NextResponse.json()
+    const result = handleError(error, "api") as { status: number; [key: string]: unknown };
+    return NextResponse.json(result, { status: result.status ?? 500 });
+    // return handleError(error, "api");
   }
 }
