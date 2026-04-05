@@ -17,6 +17,7 @@ import AllAnswers from "@/components/answers/AllAnswers";
 import Votes from "@/components/votes/Votes";
 import { hasVoted } from "@/lib/actions/vote.action";
 import { Suspense } from "react";
+import SaveQuestion from "@/components/questions/SaveQuestion";
 
 const QuestionDetails = async ({ params }: RouteParams) => {
   //   He Params ahe
@@ -133,7 +134,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
             </div>
 
             {/* Votes on the right */}
-            <div className="w-full flex justify-end">
+            <div className="w-full flex justify-end space-x-2">
               <Suspense fallback={<div>Loading...</div>}>
                 <Votes
                   upvotes={question.upvotes}
@@ -142,6 +143,10 @@ const QuestionDetails = async ({ params }: RouteParams) => {
                   targetId={question._id}
                   targetType="question"
                 />
+              </Suspense>
+
+              <Suspense fallback={<div>Loading...</div>}>
+                <SaveQuestion questionId={question._id} />
               </Suspense>
             </div>
           </div>
