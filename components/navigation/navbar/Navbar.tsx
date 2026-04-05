@@ -24,7 +24,7 @@ const Navbar = async () => {
         {/*logo text   */}
         <p className="h2-bold font-space-grotesk text-dark-100 dark:text-light-900 max-sm:hidden">
           {/* device lowert than 640 px we hide the logo  */}
-          Dev <span className="text-primary-500">Flow</span>
+          Dev <span className="text-primary-500">OverFlow</span>
         </p>
       </Link>
 

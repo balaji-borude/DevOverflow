@@ -60,6 +60,6 @@ export interface Answers {
   content: string;
   createdAt: Date | string;
   question?: string;
-  upvotes?: number;
-  downvotes?: number;
+  upvotes: number;
+  downvotes: number;
 }
