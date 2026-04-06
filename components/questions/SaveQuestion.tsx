@@ -1,18 +1,22 @@
 "use client";
 
 import { toggleSaveQuestion } from "@/lib/actions/collection.action";
+import { ActionResponse } from "@/types/global";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
+import { use, useState } from "react";
 import { toast } from "sonner";
 
-const SaveQuestion = ({ questionId }: { questionId: string }) => {
+const SaveQuestion = ({ questionId ,hasSavedQuestionPromise}: { questionId: string ,hasSavedQuestionPromise: Promise<ActionResponse<{ saved: boolean }>> }) => {
 
   const session = useSession();
 
   const userId = session?.data?.user?.id;
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const {data} = use(hasSavedQuestionPromise);
+  const {saved:hasSaved} = data || {};
 
   // function
   const handleSave = async () => {
@@ -39,7 +43,8 @@ const SaveQuestion = ({ questionId }: { questionId: string }) => {
     }
   };
 
-  const hasSaved = true; // You can replace this with actual logic to check if the question is already saved by the user
+
+
   return (
     <Image
       src={hasSaved ? "/icons/star-filled.svg" : "/icons/star.svg"}

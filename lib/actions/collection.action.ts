@@ -11,6 +11,7 @@ import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/route";
 
+
 export async function toggleSaveQuestion(
   params: CollectionBaseParams,
 ): Promise<ActionResponse<{ saved: boolean }>> {
@@ -40,6 +41,7 @@ export async function toggleSaveQuestion(
 
     if (collection) {
       await Collection.findByIdAndDelete(collection._id);
+
       revalidatePath(ROUTES.QUESTION(questionId));
       return {
         success: true,
@@ -49,13 +51,12 @@ export async function toggleSaveQuestion(
       };
     }
 
-
     await Collection.create({
-        question: questionId,
-        author: userId,
+      question: questionId,
+      author: userId,
     });
 
-    revalidatePath(ROUTES.QUESTION(questionId)); 
+    revalidatePath(ROUTES.QUESTION(questionId));
 
     return {
       success: true,
@@ -68,9 +69,8 @@ export async function toggleSaveQuestion(
   }
 }
 
-
 // in collection.action.ts
-export async function getSavedQuestion(
+export async function hasSavedQuestion(
   params: CollectionBaseParams,
 ): Promise<ActionResponse<{ saved: boolean }>> {
   const validationResult = await action({
@@ -92,7 +92,12 @@ export async function getSavedQuestion(
       author: userId,
     });
 
-    return { success: true, data: { saved: !!collection } };
+
+    // !! --> converts the value to a boolean, so if collection is null or undefined, it will return false, otherwise true
+    return {
+       success: true, 
+       data: { saved: !!collection } 
+      };
   } catch (error) {
     return handleError(error as Error) as ErrorResponse;
   }

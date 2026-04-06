@@ -18,6 +18,7 @@ import Votes from "@/components/votes/Votes";
 import { hasVoted } from "@/lib/actions/vote.action";
 import { Suspense } from "react";
 import SaveQuestion from "@/components/questions/SaveQuestion";
+import { hasSavedQuestion } from "@/lib/actions/collection.action";
 
 const QuestionDetails = async ({ params }: RouteParams) => {
   //   He Params ahe
@@ -42,8 +43,9 @@ const QuestionDetails = async ({ params }: RouteParams) => {
   // here we are using --> Use (Hook) of react
   const hasVotedPromise = hasVoted({ targetId: id, targetType: "question" });
   // console.log("All the anwers --->", answersResult);
+  const hasSavedQuestionPromise =hasSavedQuestion({ questionId: id });
 
-  console.log("Printing the questions data----->", question);
+  // console.log("Printing the questions data----->", question);
 
   const {
     author,
@@ -134,7 +136,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
             </div>
 
             {/* Votes on the right */}
-            <div className="w-full flex justify-end space-x-2">
+            <div className="w-full flex justify-end items-center gap-4">
               <Suspense fallback={<div>Loading...</div>}>
                 <Votes
                   upvotes={question.upvotes}
@@ -146,7 +148,9 @@ const QuestionDetails = async ({ params }: RouteParams) => {
               </Suspense>
 
               <Suspense fallback={<div>Loading...</div>}>
-                <SaveQuestion questionId={question._id} />
+                <SaveQuestion questionId={question._id}
+                hasSavedQuestionPromise={hasSavedQuestionPromise}
+                />
               </Suspense>
             </div>
           </div>
