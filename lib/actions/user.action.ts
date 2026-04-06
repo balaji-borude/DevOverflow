@@ -7,9 +7,12 @@ import {
   User as UserType,
 } from "@/types/global";
 import action from "../handlers/action";
-import { PaginatedSearchParamsSchema } from "../validations";
+import { getUserSchema, PaginatedSearchParamsSchema } from "../validations";
 import handleError from "../handlers/errors";
+import { GetUserParams } from "@/types/action";
 import User from "@/database/user.model";
+import Question from "@/database/question.model";
+import Answer from "@/database/answers.model";
 
 
 export async function getUser(
@@ -74,3 +77,50 @@ export async function getUser(
     return handleError(error) as ErrorResponse;
   }
 }
+
+
+// Profile page
+export async function getUserProfile(params:GetUserParams):Promise<ActionResponse<{ user:typeof User,
+  totalQuestions:number,
+  totalAnswers:number,
+ }>>{
+
+
+  const validationResult = await action({
+    params,
+    schema: getUserSchema,
+
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+  const { userId } = validationResult.params!;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    };
+
+    const totalQuestions = await Question.countDocuments({ author: userId });
+
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+
+    return{
+      success:true,
+      data:{
+        user:JSON.parse(JSON.stringify(user)),
+        totalQuestions,
+        totalAnswers,
+      }
+    }
+
+
+
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+
+
+
+}   
