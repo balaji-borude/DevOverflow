@@ -76,3 +76,12 @@ export interface User{
   portfolio?: string;
   reputation?: number;
 }
+
+
+// saved question collection interface
+export interface Collection {
+  _id: string;
+  question: string;
+  author: string  | Author;
+
+}
