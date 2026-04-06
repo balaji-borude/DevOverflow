@@ -81,7 +81,7 @@ export interface User{
 // saved question collection interface
 export interface Collection {
   _id: string;
-  question: string;
+  question: string | Questions;
   author: string  | Author;
 
 }
