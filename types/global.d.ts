@@ -98,3 +98,9 @@ interface User{
   portfolio?: string;
   reputation?: number;
 }
+
+interface BadgeCounts{
+  GOLD: number;
+  SILVER: number; 
+  BRONZE: number;
+}
