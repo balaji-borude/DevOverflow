@@ -75,6 +75,7 @@ export interface User{
   location?: string;
   portfolio?: string;
   reputation?: number;
+  createdAt: Date;
 }
 
 
@@ -84,4 +85,16 @@ export interface Collection {
   question: string | Questions;
   author: string  | Author;
 
+}
+
+interface User{
+  _id: string;
+  name: string;
+  username: string;
+  email: string;
+  bio?: string;
+  image?: string;
+  location?: string;
+  portfolio?: string;
+  reputation?: number;
 }

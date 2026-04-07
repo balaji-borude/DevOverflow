@@ -10,10 +10,9 @@ import action from "../handlers/action";
 import { getUserSchema, PaginatedSearchParamsSchema } from "../validations";
 import handleError from "../handlers/errors";
 import { GetUserParams } from "@/types/action";
-import User from "@/database/user.model";
 import Question from "@/database/question.model";
 import Answer from "@/database/answers.model";
-
+import User from "@/database/user.model";
 
 export async function getUser(
   params: PaginatedSearchParams,
@@ -52,7 +51,7 @@ export async function getUser(
       sortCriteria = { createdAt: 1 };
       break;
     case "popular":
-      sortCriteria = { reputation : -1 };
+      sortCriteria = { reputation: -1 };
     default:
       sortCriteria = { createdAt: -1 };
       break;
@@ -61,35 +60,38 @@ export async function getUser(
   try {
     const totalUser = await User.countDocuments(filterQuery);
 
-    const users = await User.find(filterQuery).sort(sortCriteria).skip(skip).limit(limit);
+    const users = await User.find(filterQuery)
+      .sort(sortCriteria)
+      .skip(skip)
+      .limit(limit);
 
     const isNext = totalUser > skip + users.length;
 
     return {
       success: true,
       data: {
-        users:JSON.parse(JSON.stringify(users)),
+        users: JSON.parse(JSON.stringify(users)),
         isNext,
       },
     };
-
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
 }
 
-
 // Profile page
-export async function getUserProfile(params:GetUserParams):Promise<ActionResponse<{ user:typeof User,
-  totalQuestions:number,
-  totalAnswers:number,
- }>>{
-
-
+export async function getUserProfile(
+  params: GetUserParams,
+): Promise<
+  ActionResponse<{
+    user:  UserType;
+    totalQuestions: number;
+    totalAnswers: number;
+  }>
+> {
   const validationResult = await action({
     params,
     schema: getUserSchema,
-
   });
 
   if (validationResult instanceof Error) {
@@ -100,27 +102,22 @@ export async function getUserProfile(params:GetUserParams):Promise<ActionRespons
     const user = await User.findById(userId);
     if (!user) {
       throw new Error("User not found");
-    };
+    }
 
     const totalQuestions = await Question.countDocuments({ author: userId });
 
     const totalAnswers = await Answer.countDocuments({ author: userId });
 
-    return{
-      success:true,
-      data:{
-        user:JSON.parse(JSON.stringify(user)),
+    return {
+      success: true,
+      data: {
+        user: JSON.parse(JSON.stringify(user)),
         totalQuestions,
         totalAnswers,
-      }
-    }
-
-
+      },
+    };
 
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
-
-
-
-}   
+}
