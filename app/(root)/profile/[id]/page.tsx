@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import ProfileLink from "@/components/user/ProfileLink";
 import UserAvatar from "@/components/UserAvatar";
-import { getUserProfile } from "@/lib/actions/user.action";
+import { getUserProfile, getUserQuestion } from "@/lib/actions/user.action";
 import { RouteParams } from "@/types/action";
 import { notFound } from "next/navigation";
 import dayjs from "dayjs";
@@ -9,9 +9,19 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Stats from "@/components/user/Stats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Question from '@/database/question.model';
+import DataRenderer from "@/components/DataRenderer";
+import { EMPTY_QUESTIONS } from "@/constants/states";
+import QuestionCard from "@/components/cards/QuestionCard";
+import Page from '../../../../.next/dev/types/routes';
 
-const Profile = async ({ params }: RouteParams) => {
+const Profile = async ({ params,searchParams }: RouteParams) => {
+  // /2123423
   const { id } = await params;
+  // ?page=1&pageSize=10 --> these is the difference 
+  const{page,pageSize} = await searchParams;
+
+
   if (!id) notFound();
 
   const loggedInUser = await auth();
@@ -43,6 +53,12 @@ const Profile = async ({ params }: RouteParams) => {
 
   console.log("Logged In User Id ", loggedInUser?.user?.id);
   console.log("user_id", _id);
+
+  const {success:userQuestionSuccess, data:userQuestionData, error:userQuestionError} = await getUserQuestion({userId:_id, page:Number(page)||1 , pageSize:Number(pageSize)||10});
+
+  const {questions,isNext:hasMoreQuestion} = userQuestionData!;
+
+
   return (
     <>
       <section className="flex flex-col-reverse items-start justify-between sm:flex-row">
@@ -116,9 +132,32 @@ const Profile = async ({ params }: RouteParams) => {
             <TabsTrigger value="top-post" className="tab">Top Posts</TabsTrigger>
             <TabsTrigger value="answer" className="tab">Answer</TabsTrigger>
           </TabsList>
+
+        {/* top questions */}
           <TabsContent value="top-post" className="mt-5 flex w-full flex-col gap-6">
-            List of Questions
+            <DataRenderer
+              data={questions}
+              empty={EMPTY_QUESTIONS}
+              success={userQuestionSuccess}
+              error={userQuestionError}
+              render={(hotQuestions)=><div className="flex w-full flex-col gap-6">
+                {
+                  questions.map((question)=>{
+                    return <QuestionCard key={question._id} question={question} />
+                  })
+                }
+              </div>}
+            />
+
+            {/* <Pagination
+              Page={Page}
+              isNext={hasMoreQuestion}
+            /> */}
+            
           </TabsContent>
+
+
+          {/* ansers */}
           <TabsContent value="answer" className="mt-5 flex w-full flex-col gap-6">
             List of Answers 
           </TabsContent>
@@ -126,7 +165,7 @@ const Profile = async ({ params }: RouteParams) => {
 
         <div className="flex w-full min-w-[250px] flex-1 flex-col max-lg:hidden">
           <h3 className="h3-bold text-dark-200_light900">
-          Top Tech
+          Top Techa
           </h3>
           <div className="mt-7 flex flex-col gap-4">
             <p> List of tags</p>

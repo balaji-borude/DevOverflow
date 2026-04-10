@@ -4,12 +4,18 @@ import {
   ActionResponse,
   ErrorResponse,
   PaginatedSearchParams,
+  Questions,
   User as UserType,
 } from "@/types/global";
+
 import action from "../handlers/action";
-import { getUserSchema, PaginatedSearchParamsSchema } from "../validations";
+import {
+  getUserQuestionSchema,
+  getUserSchema,
+  PaginatedSearchParamsSchema,
+} from "../validations";
 import handleError from "../handlers/errors";
-import { GetUserParams } from "@/types/action";
+import { GetUserParams, GetUserQuestionParams } from "@/types/action";
 import Question from "@/database/question.model";
 import Answer from "@/database/answers.model";
 import User from "@/database/user.model";
@@ -80,11 +86,9 @@ export async function getUser(
 }
 
 // Profile page
-export async function getUserProfile(
-  params: GetUserParams,
-): Promise<
+export async function getUserProfile(params: GetUserParams): Promise<
   ActionResponse<{
-    user:  UserType;
+    user: UserType;
     totalQuestions: number;
     totalAnswers: number;
   }>
@@ -116,8 +120,52 @@ export async function getUserProfile(
         totalAnswers,
       },
     };
-
   } catch (error) {
     return handleError(error) as ErrorResponse;
   }
 }
+
+// get user questions
+export async function getUserQuestion(params: GetUserQuestionParams): Promise<
+  ActionResponse<{
+    questions: Questions[];
+    isNext: boolean;
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: getUserQuestionSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+  const { userId, page = 1, pageSize = 10 } = validationResult.params!;
+
+  const skip = (Number(page) - 1) * pageSize;
+  const limit = Number(pageSize);
+
+  try {
+    const totalQuestions = await Question.countDocuments({ author: userId });
+
+    const questions = await Question.find({
+      author: userId,
+    }).populate("author", "name image")
+      .populate("tags", "name")
+      .skip(skip)
+      .limit(limit);
+
+    const isNext = totalQuestions > skip + questions.length;
+
+    return {
+      success: true,
+      data: {
+       questions: JSON.parse(JSON.stringify(questions)),
+        isNext,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+  

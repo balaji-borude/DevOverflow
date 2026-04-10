@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 
 
 export interface Tags {
@@ -17,7 +16,7 @@ export interface Questions {
   _id: string;
   title: string;
   content: string;
-  tags: Tag[];
+  tags: Tags[];
   author: Author;
   createdAt: Date;
   upvotes: number;
