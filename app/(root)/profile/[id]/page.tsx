@@ -1,7 +1,11 @@
 import { auth } from "@/auth";
 import ProfileLink from "@/components/user/ProfileLink";
 import UserAvatar from "@/components/UserAvatar";
-import { getUserProfile, getUserQuestion } from "@/lib/actions/user.action";
+import {
+  getUserAnswers,
+  getUserProfile,
+  getUserQuestion,
+} from "@/lib/actions/user.action";
 import { RouteParams } from "@/types/action";
 import { notFound } from "next/navigation";
 import dayjs from "dayjs";
@@ -9,18 +13,17 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Stats from "@/components/user/Stats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Question from '@/database/question.model';
 import DataRenderer from "@/components/DataRenderer";
-import { EMPTY_QUESTIONS } from "@/constants/states";
+import { EMPTY_ANSWERS, EMPTY_QUESTIONS } from "@/constants/states";
 import QuestionCard from "@/components/cards/QuestionCard";
-import Page from '../../../../.next/dev/types/routes';
 
-const Profile = async ({ params,searchParams }: RouteParams) => {
+import AnswersCard from "@/components/cards/AnswersCard";
+
+const Profile = async ({ params, searchParams }: RouteParams) => {
   // /2123423
   const { id } = await params;
-  // ?page=1&pageSize=10 --> these is the difference 
-  const{page,pageSize} = await searchParams;
-
+  // ?page=1&pageSize=10 --> these is the difference
+  const { page, pageSize } = await searchParams;
 
   if (!id) notFound();
 
@@ -54,10 +57,30 @@ const Profile = async ({ params,searchParams }: RouteParams) => {
   console.log("Logged In User Id ", loggedInUser?.user?.id);
   console.log("user_id", _id);
 
-  const {success:userQuestionSuccess, data:userQuestionData, error:userQuestionError} = await getUserQuestion({userId:_id, page:Number(page)||1 , pageSize:Number(pageSize)||10});
+  const {
+    success: userQuestionSuccess,
+    data: userQuestionData,
+    error: userQuestionError,
+  } = await getUserQuestion({
+    userId: _id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+  });
 
-  const {questions,isNext:hasMoreQuestion} = userQuestionData!;
+  const { questions, isNext: hasMoreQuestion } = userQuestionData!;
 
+  // answers
+  const {
+    success: userAnswersuccess,
+    data: userAnswerData,
+    error: userAnswerError,
+  } = await getUserAnswers({
+    userId: _id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+  });
+
+  const { answers, isNext: hasMoreAnswer } = userAnswerData!;
 
   return (
     <>
@@ -127,46 +150,79 @@ const Profile = async ({ params,searchParams }: RouteParams) => {
         }}
       />
       <section className="mt-10 flex gap-10">
-        <Tabs defaultValue="top-posts" className="flex-2">
+        <Tabs defaultValue="top-post" className="flex-2">
           <TabsList className="background-light800_dark400 min-h-[42px] p-1 ">
-            <TabsTrigger value="top-post" className="tab">Top Posts</TabsTrigger>
-            <TabsTrigger value="answer" className="tab">Answer</TabsTrigger>
+            <TabsTrigger value="top-post" className="tab" >
+              Top Posts
+            </TabsTrigger>
+            <TabsTrigger value="answer" className="tab">
+              Answer
+            </TabsTrigger>
           </TabsList>
 
-        {/* top questions */}
-          <TabsContent value="top-post" className="mt-5 flex w-full flex-col gap-6">
+          {/* top questions */}
+          <TabsContent
+          
+            value="top-post"
+            className="mt-5 flex w-full flex-col gap-6"
+          >
             <DataRenderer
               data={questions}
               empty={EMPTY_QUESTIONS}
               success={userQuestionSuccess}
               error={userQuestionError}
-              render={(hotQuestions)=><div className="flex w-full flex-col gap-6">
-                {
-                  questions.map((question)=>{
-                    return <QuestionCard key={question._id} question={question} />
-                  })
-                }
-              </div>}
+              render={(questions) => (
+                <div className="flex w-full flex-col gap-6">
+                  {questions.map((question) => {
+                    return (
+                      <QuestionCard key={question._id} question={question} />
+                    );
+                  })}
+                </div>
+              )}
             />
 
             {/* <Pagination
               Page={Page}
               isNext={hasMoreQuestion}
             /> */}
-            
           </TabsContent>
 
-
           {/* ansers */}
-          <TabsContent value="answer" className="mt-5 flex w-full flex-col gap-6">
-            List of Answers 
+          <TabsContent
+            value="answer"
+            className="mt-5 flex w-full flex-col gap-6"
+          >
+            <DataRenderer
+              data={answers}
+              empty={EMPTY_ANSWERS}
+              success={userAnswersuccess}
+              error={userAnswerError}
+
+              render={(answers) => (
+                <div className="flex w-full flex-col gap-6">
+                  {answers.map((answer) => {
+                    return (
+                      <AnswersCard
+                        key={answer._id}
+                        {...answer}
+                        content={answer.content.slice(0, 100)}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            />
+
+            {/* <Pagination
+              Page={Page}
+              isNext={hasMoreQuestion}
+            /> */}
           </TabsContent>
         </Tabs>
 
         <div className="flex w-full min-w-[250px] flex-1 flex-col max-lg:hidden">
-          <h3 className="h3-bold text-dark-200_light900">
-          Top Techa
-          </h3>
+          <h3 className="h3-bold text-dark-200_light900">Top Tech</h3>
           <div className="mt-7 flex flex-col gap-4">
             <p> List of tags</p>
           </div>

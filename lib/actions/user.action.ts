@@ -2,6 +2,7 @@
 
 import {
   ActionResponse,
+  Answers,
   ErrorResponse,
   PaginatedSearchParams,
   Questions,
@@ -10,12 +11,13 @@ import {
 
 import action from "../handlers/action";
 import {
+  getUserAnswerSchema,
   getUserQuestionSchema,
   getUserSchema,
   PaginatedSearchParamsSchema,
 } from "../validations";
 import handleError from "../handlers/errors";
-import { GetUserParams, GetUserQuestionParams } from "@/types/action";
+import { GetUserAnswerParams, GetUserParams, GetUserQuestionParams } from "@/types/action";
 import Question from "@/database/question.model";
 import Answer from "@/database/answers.model";
 import User from "@/database/user.model";
@@ -134,7 +136,7 @@ export async function getUserQuestion(params: GetUserQuestionParams): Promise<
 > {
   const validationResult = await action({
     params,
-    schema: getUserQuestionSchema,
+    schema: getUserAnswerSchema,
   });
 
   if (validationResult instanceof Error) {
@@ -169,3 +171,46 @@ export async function getUserQuestion(params: GetUserQuestionParams): Promise<
   }
 }
   
+// get user Answers
+export async function getUserAnswers(params: GetUserAnswerParams): Promise<
+  ActionResponse<{
+    answers: Answers[];
+    isNext: boolean;
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: getUserQuestionSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+  const { userId, page = 1, pageSize = 10 } = validationResult.params!;
+
+  const skip = (Number(page) - 1) * pageSize;
+  const limit = Number(pageSize);
+
+  try {
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+
+    const questions = await Answer.find({
+      author: userId,
+    }).populate("author", "_id name image")
+      .skip(skip)
+      .limit(limit);
+
+    const isNext = totalAnswers > skip + questions.length;
+
+    return {
+      success: true,
+      data: {
+       answers: JSON.parse(JSON.stringify(questions)),
+        isNext,
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
