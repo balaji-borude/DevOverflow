@@ -8,6 +8,8 @@ import Link from "next/link";
 import { getQuestions } from "@/lib/actions/question.action";
 import DataRenderer from "@/components/DataRenderer";
 import { EMPTY_QUESTIONS } from "@/constants/states";
+import CommonFilter from "@/components/filters/CommonFilter";
+import { HomePageFilters } from "@/constants/filter";
 
 // import { NotFoundError, ValidationError } from "@/lib/http-errors";
 // import handleError from "@/lib/handlers/errors";
@@ -65,7 +67,7 @@ const Home = async ({ searchParams }: SearchParams) => {
       </div>
 
       {/* local search compoonents   */}
-      <section className="mt-11">
+      <section className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         {/* Localsearch --> Props pass kele  */}
         <LocalSearch
           placeholder="Search .. "
@@ -74,10 +76,16 @@ const Home = async ({ searchParams }: SearchParams) => {
           imgSrc="/icons/search.svg"
           iconPostion="Left"
         />
+
+        <CommonFilter
+          filters={HomePageFilters}
+          otherClasses="min-h-[56px] sm:min-w-[170px]"
+          containerClasses="hidden max-md:flex"
+        />
       </section>
 
       {/* question card  */}
-      <section className="mt-11">
+      <section className="mt-11 ">
         <HomeFilter />
 
         <DataRenderer
@@ -91,24 +99,7 @@ const Home = async ({ searchParams }: SearchParams) => {
           }
         />
 
-        {/* {success ? (
-          <div className="mt-10 flex w-full flex-col gap-6">
-         
-            {questions && questions.length > 0 ? (
-              questions.map((question) => (
-                <QuestionCard key={question._id} question={question} />
-              ))
-            ) : (
-              <div className="mt-10 w-full items-center justify-center">
-                <p className="text-dark400_light500">No Questions found</p>
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="mt-10 w-full items-center justify-center">
-            <p>{ "failed to fetch questions"}</p>
-          </div>
-        )} */}
+        
       </section>
     </>
   );
