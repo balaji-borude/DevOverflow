@@ -17,10 +17,16 @@ import {
   PaginatedSearchParamsSchema,
 } from "../validations";
 import handleError from "../handlers/errors";
-import { GetUserAnswerParams, GetUserParams, GetUserQuestionParams } from "@/types/action";
+import {
+  GetUserAnswerParams,
+  GetUserParams,
+  GetUserQuestionParams,
+  GetUserTagsParams,
+} from "@/types/action";
 import Question from "@/database/question.model";
 import Answer from "@/database/answers.model";
 import User from "@/database/user.model";
+import { PipelineStage, Types } from "mongoose";
 
 export async function getUser(
   params: PaginatedSearchParams,
@@ -152,7 +158,8 @@ export async function getUserQuestion(params: GetUserQuestionParams): Promise<
 
     const questions = await Question.find({
       author: userId,
-    }).populate("author", "name image")
+    })
+      .populate("author", "name image")
       .populate("tags", "name")
       .skip(skip)
       .limit(limit);
@@ -162,7 +169,7 @@ export async function getUserQuestion(params: GetUserQuestionParams): Promise<
     return {
       success: true,
       data: {
-       questions: JSON.parse(JSON.stringify(questions)),
+        questions: JSON.parse(JSON.stringify(questions)),
         isNext,
       },
     };
@@ -170,7 +177,7 @@ export async function getUserQuestion(params: GetUserQuestionParams): Promise<
     return handleError(error) as ErrorResponse;
   }
 }
-  
+
 // get user Answers
 export async function getUserAnswers(params: GetUserAnswerParams): Promise<
   ActionResponse<{
@@ -196,7 +203,8 @@ export async function getUserAnswers(params: GetUserAnswerParams): Promise<
 
     const questions = await Answer.find({
       author: userId,
-    }).populate("author", "_id name image")
+    })
+      .populate("author", "_id name image")
       .skip(skip)
       .limit(limit);
 
@@ -205,7 +213,7 @@ export async function getUserAnswers(params: GetUserAnswerParams): Promise<
     return {
       success: true,
       data: {
-       answers: JSON.parse(JSON.stringify(questions)),
+        answers: JSON.parse(JSON.stringify(questions)),
         isNext,
       },
     };
@@ -214,3 +222,49 @@ export async function getUserAnswers(params: GetUserAnswerParams): Promise<
   }
 }
 
+// Top Tech Tags used by users -- Profile section
+export async function getUserTopTags(params: GetUserTagsParams): Promise<
+  ActionResponse<{
+    tags: { _id: string; name: string; count: number }[];
+  }>
+> {
+  const validationResult = await action({
+    params,
+    schema: getUserSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+  const { userId } = params;
+
+  try {
+    const pipeline: PipelineStage[] = [
+      { $match: { author: new Types.ObjectId(userId) } },
+      { $unwind: "$tags" },
+      { $group: { _id: "$tags", count: { $sum: 1 } } },
+      {
+        $lookup: {
+          from: "tags",
+          localField: "_id",
+          foreignField: "_id",
+          as: "tagInfo",
+        },
+      },
+      { $unwind: "$tagInfo" },
+      { $sort: { count: -1 } },
+      { $limit: 10 },
+      { $project: { _id: "$tagInfo._id", name: "$tagInfo.name", count: 1 } },
+    ];
+
+    const tag = await Question.aggregate(pipeline);
+    return {
+      success: true,
+      data: {
+        tags: JSON.parse(JSON.stringify(tag)),
+      },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}

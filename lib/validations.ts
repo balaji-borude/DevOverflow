@@ -1,5 +1,4 @@
 import { z } from "zod";
-import Answer from "../database/answers.model";
 
 // signin Schema  of Form
 export const SignInSchema = z.object({
@@ -223,3 +222,8 @@ export const getUserQuestionSchema = PaginatedSearchParamsSchema.extend({
 export const getUserAnswerSchema = PaginatedSearchParamsSchema.extend({
   userId: z.string().min(1, { message: "User Id is required " }),
 });
+
+
+export const GetUserTagsSchema = z.object({
+  userId: z.string().min(1, { message: "User Id is required " }),
+})
