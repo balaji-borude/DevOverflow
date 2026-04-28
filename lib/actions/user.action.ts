@@ -15,6 +15,7 @@ import {
   getUserQuestionSchema,
   getUserSchema,
   PaginatedSearchParamsSchema,
+  UpdateUserSchema,
 } from "../validations";
 import handleError from "../handlers/errors";
 import {
@@ -216,6 +217,70 @@ export async function getUserAnswers(params: GetUserAnswerParams): Promise<
         answers: JSON.parse(JSON.stringify(questions)),
         isNext,
       },
+    };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+// Update user profile
+export async function updateUserProfile(
+  params: {
+    userId: string;
+    name?: string;
+    username?: string;
+    email?: string;
+    bio?: string;
+    image?: string;
+    location?: string;
+    portfolio?: string;
+  }
+): Promise<ActionResponse<UserType>> {
+  const validationResult = await action({
+    params,
+    schema: UpdateUserSchema,
+    authorize: true,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { userId, name, username, email, bio, image, location, portfolio } = validationResult.params!;
+
+  try {
+    // Build update object with only provided fields
+    const updateFields: Partial<{
+      name: string;
+      username: string;
+      email: string;
+      bio: string;
+      image: string;
+      location: string;
+      portfolio: string;
+    }> = {};
+    
+    if (name !== undefined) updateFields.name = name;
+    if (username !== undefined) updateFields.username = username;
+    if (email !== undefined) updateFields.email = email;
+    if (bio !== undefined) updateFields.bio = bio;
+    if (image !== undefined) updateFields.image = image;
+    if (location !== undefined) updateFields.location = location;
+    if (portfolio !== undefined) updateFields.portfolio = portfolio;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      updateFields,
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      throw new Error("User not found");
+    }
+
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(updatedUser)),
     };
   } catch (error) {
     return handleError(error) as ErrorResponse;

@@ -16,6 +16,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "www.profilepicture.ai",
+      },
+      {
+        protocol: "https",
+        hostname: "profilepicture.ai",
+      },
     ],
   },
 };

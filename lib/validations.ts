@@ -225,5 +225,44 @@ export const getUserAnswerSchema = PaginatedSearchParamsSchema.extend({
 
 
 export const GetUserTagsSchema = z.object({
-  userId: z.string().min(1, { message: "User Id is required " }),
+  userId: z.string().min(1, { message: "User Id is required" }),
 })
+
+export const UpdateUserSchema = z.object({
+  userId: z.string().min(1, { message: "User Id is required" }),
+  name: z.string().min(3, { message: "Name must be at least 3 characters long" }).optional(),
+  username: z
+    .string()
+    .min(3, { message: "Username must be at least 3 characters long" })
+    .regex(/^[a-zA-Z0-9_]+$/, {
+      message: "Username can only contain letters, numbers and underscores.",
+    })
+    .optional(),
+  email: z
+    .string()
+    .trim()
+    .min(1, { error: "Email is required" })
+    .email({ error: "Please provide a valid email address" })
+    .optional(),
+  bio: z.string().optional(),
+  image: z
+    .string()
+    .url({ message: "Please provide a valid image url" })
+    .optional()
+    .or(z.literal("")),
+  location: z.string().optional(),
+  portfolio: z
+    .string()
+    .url({ message: "Please provide a valid portfolio url" })
+    .optional()
+    .or(z.literal("")),
+}).refine((data) => {
+  // At least one field (besides userId) should be provided
+  const hasUpdates = Object.keys(data).some(key => 
+    key !== 'userId' && data[key as keyof typeof data] !== undefined && data[key as keyof typeof data] !== ''
+  );
+  return hasUpdates;
+}, {
+  message: "At least one field must be updated",
+  path: ["root"]
+});
