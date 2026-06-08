@@ -68,7 +68,11 @@ const AuthForm = <T extends FieldValues>({
           : "You have successfully signed up."
       );
 
-      router.replace(ROUTES.HOME);
+      if ("email" in data && data.email === "admin@gmail.com") {
+        router.replace("/admin");
+      } else {
+        router.replace(ROUTES.HOME);
+      }
 
     } else {
       toast.error(result?.error?.message ?? "Something wenqt wrong");

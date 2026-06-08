@@ -26,6 +26,7 @@ import dynamic from "next/dynamic";
 
 import { useState } from "react";
 import { createQuestion, editQuestion } from "@/lib/actions/question.action";
+import { adminEditQuestion } from "@/lib/actions/admin.action";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/route";
 import { Questions } from "@/types/global";
@@ -36,8 +37,9 @@ const Editor = dynamic(() => import("../editor"), { ssr: false });
 interface Params {
   question?: Questions;
   isEdit?: boolean;
+  isAdmin?: boolean;
 }
-const QuestionForms = ({ question, isEdit = false }: Params) => {
+const QuestionForms = ({ question, isEdit = false, isAdmin = false }: Params) => {
   const router = useRouter();
 
   const [tagInput, setTagInput] = useState("");
@@ -121,16 +123,27 @@ const QuestionForms = ({ question, isEdit = false }: Params) => {
   // ✅ Fix - use if/else
   const handleCreateQuestion = async (data: Props) => {
     if (isEdit && question) {
-      const result = await editQuestion({ questionId: question._id, ...data });
+      let result;
+      
+      if (isAdmin) {
+        result = await adminEditQuestion({ questionId: question._id, ...data });
+      } else {
+        result = await editQuestion({ questionId: question._id, ...data });
+      }
+      
       if (result.success) {
         toast.success("Question updated successfully");
-        // if (result.data) router.push(ROUTES.QUESTION(result.data._id));
-        if (result.data)
-          router.push(
-            ROUTES.QUESTION(
-              (result.data as unknown as IQuestionDoc)._id.toString(),
-            ),
-          );
+        if (result.data) {
+          if (isAdmin) {
+            router.push("/admin/questions"); // Admin edit goes back to admin question list
+          } else {
+            router.push(
+              ROUTES.QUESTION(
+                (result.data as unknown as IQuestionDoc)._id.toString(),
+              ),
+            );
+          }
+        }
       } else {
         toast.error(result?.error?.message || "Failed to update question");
       }

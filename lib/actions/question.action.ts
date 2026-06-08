@@ -29,7 +29,8 @@ import type {
 import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/route";
 
-console.log("User model registered: -------->", User.modelName);
+// console.log("User model registered: -------->", User.modelName);
+
 // create question
 export async function createQuestion(
   params: CreateQuestionParams,

@@ -9,6 +9,7 @@ export interface IUser {
   location?: string;
   portfolio?: string;
   reputation?: number;
+  isBanned?: boolean;
 }
 
 // export interface IUserDoc extends IUser,Document{}
@@ -42,6 +43,10 @@ const userSchema = new Schema<IUser>({
   reputation: {
     type: Number,
     default: 0,
+  },
+  isBanned: {
+    type: Boolean,
+    default: false,
   },
 },
 {timestamps:true}

@@ -3,6 +3,7 @@ import { getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
 import TagCards from "./TagCards";
 import Metrics from "../Metrics";
+import DeleteQuestionButton from "../admin/DeleteQuestionButton";
 
 interface QuestionProps {
   _id: string;
@@ -18,6 +19,7 @@ interface QuestionProps {
 
 interface Props {
   question: QuestionProps;
+  isAdmin?: boolean;
 }
 
 const getInitials = (name: string) => {
@@ -28,7 +30,7 @@ const getInitials = (name: string) => {
     .toUpperCase()
     .slice(0, 2);
 };
-const QuestionCard = ({ question }: Props) => {
+const QuestionCard = ({ question, isAdmin }: Props) => {
   // console.log("Get the questions --> ",question)
   // desstruct the question part here
   const {
@@ -61,6 +63,18 @@ const QuestionCard = ({ question }: Props) => {
             </h3>
           </Link>
         </div>
+
+        {isAdmin && (
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/admin/questions/${_id}/edit`}
+              className="flex items-center justify-center rounded-lg bg-primary-500/10 px-4 py-2 text-primary-500 hover:bg-primary-500/20"
+            >
+              Edit Question
+            </Link>
+            <DeleteQuestionButton questionId={_id} />
+          </div>
+        )}
       </div>
 
       {/* Tags */}

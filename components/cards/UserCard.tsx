@@ -1,11 +1,14 @@
 import { User } from "@/types/global";
-
-
 import UserAvatar from "../UserAvatar";
 import Link from "next/link";
 import ROUTES from "@/constants/route";
+import BanUserButton from "../admin/BanUserButton";
 
-const UserCard = ({ _id, name, image, username, bio }: User) => {
+interface Props extends User {
+  isAdmin?: boolean;
+}
+
+const UserCard = ({ _id, name, image, username, bio, isBanned, isAdmin }: Props) => {
   return (
     <div className="shadow-light100_darknone w-full xs:w-[230px] ">
       <article className="background-light900_dark200 light-border flex w-full flex-col items-center justify-center rounded-2xl border p-8">
@@ -31,6 +34,12 @@ const UserCard = ({ _id, name, image, username, bio }: User) => {
        
           </div>
         </Link>
+
+        {isAdmin && (
+          <div className="mt-4 w-full">
+            <BanUserButton userId={_id} isBanned={isBanned} />
+          </div>
+        )}
       </article>
     </div>
   );

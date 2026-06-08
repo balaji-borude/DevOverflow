@@ -75,6 +75,7 @@ export interface User{
   portfolio?: string;
   reputation?: number;
   createdAt: Date;
+  isBanned?: boolean;
 }
 
 
@@ -96,6 +97,7 @@ interface User{
   location?: string;
   portfolio?: string;
   reputation?: number;
+  isBanned?: boolean;
 }
 
 interface BadgeCounts{
